@@ -1,0 +1,207 @@
+@import 'tailwindcss';
+
+/* ───────────────────────────────────────────────────────────────────────────
+   Design tokens. The three brand colours are driven by config.ts at runtime
+   (see lib/theme.ts); everything else is the fixed editorial palette.
+   ─────────────────────────────────────────────────────────────────────────── */
+@theme {
+  --color-ivory: #fbf7f1;
+  --color-cream: #f6efe6;
+  --color-sand: #efe3d4;
+  --color-beige: #e8d8c3;
+  --color-champagne: #c79b63;
+  --color-cocoa: #8d5b4c;
+  --color-espresso: #3a2c26;
+  --color-mocha: #6f5b50;
+
+  --color-primary: var(--brand-primary, #8d5b4c);
+  --color-secondary: var(--brand-secondary, #e8d8c3);
+  --color-accent: var(--brand-accent, #c79b63);
+  --color-on-primary: var(--brand-on-primary, #fbf7f1);
+  --color-on-accent: var(--brand-on-accent, #3a2c26);
+
+  --font-display: 'Playfair Display', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --shadow-soft: 0 18px 50px -24px rgb(58 44 38 / 0.35);
+  --shadow-lift: 0 30px 70px -30px rgb(58 44 38 / 0.45);
+
+  --ease-silk: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@layer base {
+  :root {
+    --brand-primary: #8d5b4c;
+    --brand-secondary: #e8d8c3;
+    --brand-accent: #c79b63;
+    --brand-on-primary: #fbf7f1;
+    --brand-on-accent: #3a2c26;
+    color-scheme: light;
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* keeps anchored sections clear of the sticky navigation */
+    scroll-padding-top: 5.5rem;
+  }
+
+  body {
+    background-color: var(--color-ivory);
+    color: var(--color-espresso);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  .font-display {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  /* Visible, on-brand focus ring for keyboard users. */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--color-accent) 35%, transparent);
+    color: var(--color-espresso);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Ivory paper with a faint gold emboss — the base texture of the whole site. */
+  .paper {
+    background-color: var(--color-ivory);
+    background-image:
+      radial-gradient(
+        120% 90% at 50% 0%,
+        color-mix(in srgb, var(--color-secondary) 55%, transparent) 0%,
+        transparent 60%
+      ),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%23C79B63' stroke-opacity='0.11' stroke-width='1'%3E%3Cpath d='M80 24c14 14 14 26 0 40-14-14-14-26 0-40z'/%3E%3Cpath d='M80 136c-14-14-14-26 0-40 14 14 14 26 0 40z'/%3E%3Cpath d='M24 80c14-14 26-14 40 0-14 14-26 14-40 0z'/%3E%3Cpath d='M136 80c-14 14-26 14-40 0 14-14 26-14 40 0z'/%3E%3Ccircle cx='80' cy='80' r='3'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: auto, 260px 260px;
+  }
+
+  .glass-nav {
+    background: color-mix(in srgb, var(--color-ivory) 72%, transparent);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    border-bottom: 1px solid color-mix(in srgb, var(--color-accent) 28%, transparent);
+    box-shadow: 0 10px 40px -28px rgb(58 44 38 / 0.6);
+  }
+
+  /* The mobile menu: opaque enough to read against any hero. */
+  .menu-sheet {
+    background-color: var(--color-ivory);
+  }
+
+  .glass-panel {
+    background: color-mix(in srgb, var(--color-ivory) 82%, transparent);
+    backdrop-filter: blur(22px) saturate(140%);
+    -webkit-backdrop-filter: blur(22px) saturate(140%);
+  }
+
+  .card {
+    background: color-mix(in srgb, #ffffff 68%, var(--color-cream));
+    border: 1px solid color-mix(in srgb, var(--color-accent) 22%, transparent);
+    border-radius: 1.75rem;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .gold-rule {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--color-accent) 75%, transparent),
+      transparent
+    );
+    height: 1px;
+  }
+
+  .eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-primary) 80%, var(--color-mocha));
+    font-weight: 500;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer utilities {
+  .hero-scrim {
+    background: linear-gradient(
+      180deg,
+      rgb(58 44 38 / 0.42) 0%,
+      rgb(58 44 38 / 0.24) 38%,
+      rgb(58 44 38 / 0.55) 100%
+    );
+  }
+
+  .float-slow {
+    animation: float 9s var(--ease-silk) infinite;
+  }
+
+  .float-slower {
+    animation: float 13s var(--ease-silk) infinite;
+  }
+
+  .shimmer-text {
+    background: linear-gradient(
+      100deg,
+      var(--color-accent) 0%,
+      color-mix(in srgb, var(--color-accent) 40%, #fff) 45%,
+      var(--color-accent) 90%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(0, -14px, 0) rotate(2deg);
+  }
+}
