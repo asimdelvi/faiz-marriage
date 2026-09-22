@@ -1,7 +1,7 @@
 # Wedding Invitation
 
 A premium, mobile-first, single-page wedding invitation — built to be reused for
-any couple by editing **one file**: `src/config.ts`.
+any couple by editing **one file**: `src/config.json`.
 
 React 19 · TypeScript · Vite · Tailwind CSS v4 · Framer Motion.
 
@@ -17,15 +17,16 @@ npm run preview  # serve the production build
 ```
 
 `npm run build` runs `scripts/generate-static.mjs` first, which reads
-`src/config.ts` and writes the real `<title>`, meta description, OpenGraph and
+`src/config.json` and writes the real `<title>`, meta description, OpenGraph and
 Twitter tags, Schema.org `Event` JSON-LD into `index.html`, plus `public/robots.txt`
 and `public/sitemap.xml`. Crawlers and link previews therefore see the couple's
 details without running any JavaScript.
 
 ## Configuring
 
-Everything lives in [`src/config.ts`](src/config.ts). Nothing is hardcoded in the
-components, and every field degrades gracefully:
+Everything lives in [`src/config.json`](src/config.json) — plain JSON, no code.
+`src/config.ts` only gives it a type and hands it to the app. Nothing is
+hardcoded in the components, and every field degrades gracefully:
 
 | Field | Notes |
 | --- | --- |
@@ -124,7 +125,8 @@ sitemap are correct.
 
 ```
 src/
-  config.ts          ← the only file you normally edit
+  config.json        ← the only file you normally edit
+  config.ts          ← types the JSON and exports it
   types.ts           ← the shape of the config
   sections/          ← Hero, Invitation, Story, Timeline, Family, Gallery, Venue, RSVP, Footer
   components/        ← Navigation, MusicPlayer, WelcomeModal, Countdown

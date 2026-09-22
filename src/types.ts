@@ -60,6 +60,9 @@ export type RsvpConfig = {
 };
 
 export type SiteConfig = {
+  /** Editing notes carried in config.json. Ignored by the site. */
+  _readme?: string[];
+
   brideName: string;
   groomName: string;
   /** ISO 8601, e.g. "2026-02-14". Drives the countdown + Schema.org Event. */

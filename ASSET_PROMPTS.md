@@ -8,10 +8,10 @@ To replace that artwork with real imagery you have two routes.
 
 ## 1. Generate automatically
 
-Set an endpoint in `src/config.ts`:
+Set an endpoint in `src/config.json`:
 
-```ts
-imageGenerator: 'https://your-image-service.example/generate?prompt={prompt}&seed={seed}&w=1600',
+```json
+"imageGenerator": "https://your-image-service.example/generate?prompt={prompt}&seed={seed}&w=1600"
 ```
 
 `{prompt}` (URL-encoded) and `{seed}` (stable per prompt) are substituted at runtime.

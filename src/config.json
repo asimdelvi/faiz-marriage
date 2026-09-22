@@ -1,0 +1,156 @@
+{
+  "_readme": [
+    "THE ONLY FILE YOU NEED TO EDIT. Fill in the values between the quotes.",
+    "Anything left as \"\" or [] hides itself — an empty family list removes the Family section and its menu link.",
+    "weddingDate must be ISO: \"2026-12-12\". weddingTime is free text: \"7:00 PM onwards\" (a clock time in it feeds the countdown).",
+    "rsvp.type is one of: whatsapp | form | url | none. For whatsapp, value is the number with country code and no +, e.g. \"919876543210\".",
+    "Photos go in public/images/ and are referenced as \"/images/name.jpg\". Music goes in public/music/.",
+    "Any image you leave out is replaced by generated gold artwork, so a half-filled file still looks finished.",
+    "This _readme key is ignored by the site — leave it or delete it.",
+    "family item: { \"id\": \"brides-parents\", \"name\": \"Mr. & Mrs. Sharma\", \"relation\": \"Parents of the Bride\", \"side\": \"bride\", \"note\": \"\", \"image\": { \"src\": \"/images/family-1.jpg\" } }  —  side is bride | groom | both",
+    "gallery item: { \"id\": \"g1\", \"src\": \"/images/gallery-1.jpg\", \"caption\": \"The first look\", \"orientation\": \"portrait\" }  —  orientation is portrait | landscape | square",
+    "contacts item: { \"name\": \"Imran\", \"phone\": \"+91 98765 43210\", \"relation\": \"Brother of the bride\" }",
+    "Ceremonies: delete any you are not having, reorder them, or add your own — keep each id unique."
+  ],
+  "brideName": "",
+  "groomName": "",
+  "weddingDate": "",
+  "weddingTime": "",
+  "venueName": "",
+  "venueAddress": "",
+  "googleMapsUrl": "",
+  "hashtag": "",
+  "logo": "",
+  "siteUrl": "https://asimdelvi.github.io/faiz-marriage",
+  "locale": "en_IN",
+  "heroImage": "",
+  "heroVideo": "",
+  "heroEyebrow": "Together with our families",
+  "heroSubtitle": "request the pleasure of your company",
+  "invitationNote": "A celebration of love, family and new beginnings — we would be honoured to have you with us.",
+  "backgroundMusic": "",
+  "colors": {
+    "primary": "#8D5B4C",
+    "secondary": "#E8D8C3",
+    "accent": "#C79B63"
+  },
+  "story": [
+    {
+      "id": "how-we-met",
+      "title": "How we met",
+      "body": "Two families, one introduction, and a conversation that simply never ended.",
+      "image": {
+        "src": "",
+        "prompt": "PROMPT_STORY_MEET"
+      }
+    },
+    {
+      "id": "the-promise",
+      "title": "The promise",
+      "body": "A quiet yes, said in front of the people who matter most to us.",
+      "image": {
+        "src": "",
+        "prompt": "PROMPT_STORY_PROPOSAL"
+      }
+    }
+  ],
+  "timeline": [
+    {
+      "id": "mehendi",
+      "title": "Mehendi",
+      "date": "",
+      "time": "",
+      "venue": "",
+      "description": "Henna, music and the slow, happy hum of the house filling up with family.",
+      "image": {
+        "src": "",
+        "prompt": "PROMPT_MEHENDI"
+      }
+    },
+    {
+      "id": "haldi",
+      "title": "Haldi",
+      "date": "",
+      "time": "",
+      "venue": "",
+      "description": "Marigolds, turmeric and blessings — the morning everything turns golden.",
+      "image": {
+        "src": "",
+        "prompt": "PROMPT_HALDI"
+      }
+    },
+    {
+      "id": "sangeet",
+      "title": "Sangeet",
+      "date": "",
+      "time": "",
+      "venue": "",
+      "description": "An evening of rehearsed dances, unrehearsed laughter and far too many encores.",
+      "image": {
+        "src": "",
+        "prompt": "PROMPT_SANGEET"
+      }
+    },
+    {
+      "id": "baraat",
+      "title": "Baraat",
+      "date": "",
+      "time": "",
+      "venue": "",
+      "description": "The procession arrives — dhol, flowers and a street that belongs to us.",
+      "image": {
+        "src": "",
+        "prompt": "PROMPT_BARAAT"
+      }
+    },
+    {
+      "id": "wedding",
+      "title": "The Wedding",
+      "date": "",
+      "time": "",
+      "venue": "",
+      "description": "Vows exchanged before the sacred fire, witnessed by everyone we love.",
+      "image": {
+        "src": "",
+        "prompt": "PROMPT_SAAT_PHERE"
+      }
+    },
+    {
+      "id": "reception",
+      "title": "Reception",
+      "date": "",
+      "time": "",
+      "venue": "",
+      "description": "Dinner, toasts and the first evening as husband and wife.",
+      "image": {
+        "src": "",
+        "prompt": "PROMPT_DINNER"
+      }
+    }
+  ],
+  "family": [],
+  "gallery": [],
+  "venueImage": {
+    "src": "",
+    "prompt": "PROMPT_VENUE"
+  },
+  "venueNote": "Valet parking available. Please arrive a little before the muhurat.",
+  "rsvp": {
+    "type": "none",
+    "value": "",
+    "label": "RSVP",
+    "message": "Hi! We would love to attend the wedding.",
+    "deadline": "",
+    "note": "Kindly let us know by the date above so we can plan the seating."
+  },
+  "socialLinks": {
+    "instagram": ""
+  },
+  "contacts": [],
+  "seo": {
+    "title": "",
+    "description": "",
+    "ogImage": ""
+  },
+  "imageGenerator": ""
+}
