@@ -1,6 +1,6 @@
 type Props = { className?: string; width?: number };
 
-/** Gold filigree divider used between sections and under headings. */
+/** Gold filigree divider: an eight-pointed khatam star between tapering rules. */
 export function Ornament({ className = '', width = 180 }: Props) {
   return (
     <svg
@@ -11,18 +11,15 @@ export function Ornament({ className = '', width = 180 }: Props) {
       fill="none"
       className={className}
     >
-      <path d="M2 12h58" stroke="var(--color-accent)" strokeOpacity="0.55" strokeWidth="1" />
-      <path d="M120 12h58" stroke="var(--color-accent)" strokeOpacity="0.55" strokeWidth="1" />
-      <path
-        d="M90 3c7 6 7 12 0 18-7-6-7-12 0-18Z"
-        stroke="var(--color-accent)"
-        strokeWidth="1"
-        fill="color-mix(in srgb, var(--color-accent) 18%, transparent)"
-      />
-      <path d="M72 12c6-5 11-5 14 0-3 5-8 5-14 0Z" stroke="var(--color-accent)" strokeWidth="1" />
-      <path d="M108 12c-6-5-11-5-14 0 3 5 8 5 14 0Z" stroke="var(--color-accent)" strokeWidth="1" />
-      <circle cx="64" cy="12" r="2" fill="var(--color-accent)" fillOpacity="0.7" />
-      <circle cx="116" cy="12" r="2" fill="var(--color-accent)" fillOpacity="0.7" />
+      <path d="M4 12h56" stroke="var(--color-accent)" strokeOpacity="0.5" strokeWidth="1" />
+      <path d="M120 12h56" stroke="var(--color-accent)" strokeOpacity="0.5" strokeWidth="1" />
+      <g transform="translate(90 12)" stroke="var(--color-accent)" strokeWidth="1">
+        <rect x="-7.5" y="-7.5" width="15" height="15" />
+        <rect x="-7.5" y="-7.5" width="15" height="15" transform="rotate(45)" />
+      </g>
+      <circle cx="66" cy="12" r="1.8" fill="var(--color-accent)" fillOpacity="0.7" />
+      <circle cx="114" cy="12" r="1.8" fill="var(--color-accent)" fillOpacity="0.7" />
+      <path d="M72 12h6M102 12h6" stroke="var(--color-accent)" strokeOpacity="0.6" strokeWidth="1" />
     </svg>
   );
 }

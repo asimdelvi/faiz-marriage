@@ -15,18 +15,18 @@ type Props = {
   rsvpLabel: string;
 };
 
-const Petal = ({ className, delay }: { className: string; delay: string }) => (
+/** Floating khatam star — the decorative element drifting over the hero. */
+const Star = ({ className, delay }: { className: string; delay: string }) => (
   <svg
     aria-hidden="true"
-    viewBox="0 0 60 60"
+    viewBox="-30 -30 60 60"
     className={className}
     style={{ animationDelay: delay }}
   >
-    <path
-      d="M30 4c14 14 14 38 0 52C16 42 16 18 30 4Z"
-      fill="var(--color-accent)"
-      fillOpacity="0.32"
-    />
+    <g fill="none" stroke="var(--color-accent)" strokeOpacity="0.5" strokeWidth="1.6">
+      <rect x="-13" y="-13" width="26" height="26" />
+      <rect x="-13" y="-13" width="26" height="26" transform="rotate(45)" />
+    </g>
   </svg>
 );
 
@@ -80,10 +80,10 @@ export function Hero({ config, bride, groom, rsvpHref, rsvpLabel }: Props) {
 
       {!reduce ? (
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-          <Petal className="float-slow absolute left-[8%] top-[18%] h-10 w-10" delay="0s" />
-          <Petal className="float-slower absolute right-[12%] top-[28%] h-14 w-14" delay="1.2s" />
-          <Petal className="float-slow absolute bottom-[22%] left-[18%] h-8 w-8" delay="2.4s" />
-          <Petal className="float-slower absolute bottom-[14%] right-[20%] h-12 w-12" delay="0.6s" />
+          <Star className="float-slow absolute left-[8%] top-[20%] h-10 w-10" delay="0s" />
+          <Star className="float-slower absolute right-[12%] top-[28%] h-14 w-14" delay="1.2s" />
+          <Star className="float-slow absolute bottom-[24%] left-[17%] h-8 w-8" delay="2.4s" />
+          <Star className="float-slower absolute bottom-[16%] right-[19%] h-12 w-12" delay="0.6s" />
         </div>
       ) : null}
 
@@ -91,6 +91,19 @@ export function Hero({ config, bride, groom, rsvpHref, rsvpLabel }: Props) {
         style={{ y: contentY, opacity: contentOpacity }}
         className="relative z-10 w-full max-w-4xl px-6 pb-24 pt-28 text-center sm:pb-28"
       >
+        {config.bismillah ? (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.2, ease: [0.22, 0.61, 0.36, 1] }}
+            lang="ar"
+            dir="rtl"
+            className="font-display mb-6 text-xl text-[color-mix(in_srgb,var(--color-accent)_88%,#fff)] sm:text-2xl"
+          >
+            {config.bismillah}
+          </motion.p>
+        ) : null}
+
         <motion.p
           initial={{ opacity: 0, y: reduce ? 0 : 14 }}
           animate={{ opacity: 1, y: 0 }}

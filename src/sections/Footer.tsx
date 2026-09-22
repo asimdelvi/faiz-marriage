@@ -17,7 +17,7 @@ export function Footer({ config, bride, groom, pair }: Props) {
   const longDate = formatLongDate(config.weddingDate);
 
   return (
-    <footer className="paper border-t border-[color-mix(in_srgb,var(--color-accent)_25%,transparent)] px-6 py-16 text-center sm:py-20">
+    <footer className="paper border-t border-[color-mix(in_srgb,var(--color-accent)_25%,transparent)] px-6 py-12 text-center sm:py-14">
       <Reveal className="mx-auto max-w-xl">
         <div className="flex h-10 items-center justify-center">
           <Monogram bride={bride} groom={groom} logo={config.logo} size="text-3xl" />
@@ -50,7 +50,13 @@ export function Footer({ config, bride, groom, pair }: Props) {
           </a>
         ) : null}
 
-        <p className="mt-10 text-[0.68rem] uppercase tracking-[0.24em] text-mocha/70">
+        {config.footerNote ? (
+          <p className="mx-auto mt-8 max-w-md text-balance text-sm leading-relaxed text-mocha">
+            {config.footerNote}
+          </p>
+        ) : null}
+
+        <p className="mt-8 text-[0.68rem] uppercase tracking-[0.24em] text-mocha/70">
           Made with love
         </p>
       </Reveal>

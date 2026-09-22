@@ -16,28 +16,39 @@ type Props = {
   className?: string;
 };
 
+/** Points of an n-pointed star, alternating outer and inner radius. */
+function starPoints(points: number, outer: number, inner: number, offset = 0): string {
+  const coords: string[] = [];
+  for (let i = 0; i < points * 2; i += 1) {
+    const radius = i % 2 === 0 ? outer : inner;
+    const angle = (Math.PI / points) * i + offset;
+    coords.push(`${(radius * Math.sin(angle)).toFixed(2)},${(-radius * Math.cos(angle)).toFixed(2)}`);
+  }
+  return coords.join(' ');
+}
+
 /**
- * Hand-drawn stand-in artwork for any image the couple hasn't supplied yet.
- * Deterministic per prompt, uses the configured palette, weighs ~2 KB and
- * makes zero network requests — so a half-filled config still looks intentional.
+ * Hand-drawn stand-in artwork for any image the couple hasn't supplied yet:
+ * khatam (eight-pointed star) geometry and a mihrab arch, in the configured
+ * palette. Deterministic per image, ~2 KB, and no network requests — so a
+ * half-filled config still looks intentional.
  */
 export function GeneratedArt({ prompt, label, variant = 'panel', seed: seedKey, className }: Props) {
   const uid = useId().replace(/:/g, '');
   const signature = seedKey ? `${prompt}|${seedKey}` : prompt;
   const seed = hashString(signature);
-  const petals = 7 + (seed % 6);
   const rotation = seed % 45;
   const ringDash = 3 + (seed % 6);
   const innerRing = 108 + (seed % 18);
+  const satellites = 8 + (seed % 5);
   const title = label ? `Artwork placeholder: ${label}` : 'Decorative artwork placeholder';
 
   if (variant === 'hero') {
-    const motes = Array.from({ length: 10 }, (_, i) => {
-      const x = hashString(`${signature}-x-${i}`) % 1600;
-      const y = 90 + (hashString(`${signature}-y-${i}`) % 720);
-      const r = 3 + (hashString(`${signature}-r-${i}`) % 6);
-      return { x, y, r };
-    });
+    const lanterns = Array.from({ length: 9 }, (_, i) => ({
+      x: hashString(`${signature}-x-${i}`) % 1600,
+      y: 90 + (hashString(`${signature}-y-${i}`) % 700),
+      r: 10 + (hashString(`${signature}-r-${i}`) % 16),
+    }));
 
     return (
       <svg
@@ -50,13 +61,13 @@ export function GeneratedArt({ prompt, label, variant = 'panel', seed: seedKey, 
       >
         <defs>
           <linearGradient id={`sky-${uid}`} x1="0" y1="0" x2="0.2" y2="1">
-            <stop offset="0%" stopColor="#5b3b31" />
+            <stop offset="0%" stopColor="#123b33" />
             <stop offset="45%" stopColor="var(--color-primary)" />
-            <stop offset="100%" stopColor="#2c211c" />
+            <stop offset="100%" stopColor="#0d2621" />
           </linearGradient>
           <radialGradient id={`sun-${uid}`} cx="52%" cy="58%" r="52%">
-            <stop offset="0%" stopColor="var(--color-accent)" stopOpacity="0.85" />
-            <stop offset="55%" stopColor="var(--color-accent)" stopOpacity="0.22" />
+            <stop offset="0%" stopColor="var(--color-accent)" stopOpacity="0.72" />
+            <stop offset="55%" stopColor="var(--color-accent)" stopOpacity="0.18" />
             <stop offset="100%" stopColor="var(--color-accent)" stopOpacity="0" />
           </radialGradient>
         </defs>
@@ -64,22 +75,28 @@ export function GeneratedArt({ prompt, label, variant = 'panel', seed: seedKey, 
         <rect width="1600" height="900" fill={`url(#sky-${uid})`} />
         <rect width="1600" height="900" fill={`url(#sun-${uid})`} />
 
-        {/* A suggestion of a mandap arch, drawn in gold thread */}
-        <g fill="none" stroke="var(--color-accent)" strokeOpacity="0.3" strokeWidth="2">
-          <path d="M420 900V520c0-210 170-380 380-380s380 170 380 380v380" />
-          <path d="M520 900V540c0-155 125-280 280-280s280 125 280 280v360" strokeOpacity="0.18" />
-          <circle cx="800" cy="196" r="34" strokeOpacity="0.4" />
-          <path d="M800 150c22 22 22 46 0 68-22-22-22-46 0-68Z" strokeOpacity="0.5" />
+        {/* A mihrab arch, drawn in gold thread */}
+        <g fill="none" stroke="var(--color-accent)" strokeOpacity="0.32" strokeWidth="2">
+          <path d="M440 900V470c0-140 80-250 180-300 100 50 180 160 180 300v430" transform="translate(180 0)" />
+          <path
+            d="M540 900V500c0-108 62-196 140-238 78 42 140 130 140 238v400"
+            transform="translate(180 0)"
+            strokeOpacity="0.2"
+          />
+          <g transform="translate(800 210)" strokeOpacity="0.45">
+            <rect x="-26" y="-26" width="52" height="52" />
+            <rect x="-26" y="-26" width="52" height="52" transform="rotate(45)" />
+          </g>
         </g>
 
-        {/* Soft bokeh, the way warm evening light behaves on camera */}
+        {/* Lantern light, the way warm evening bokeh behaves on camera */}
         <g fill="var(--color-accent)">
-          {motes.map((mote, i) => (
+          {lanterns.map((lantern, i) => (
             <circle
               key={i}
-              cx={mote.x}
-              cy={mote.y}
-              r={mote.r * 3}
+              cx={lantern.x}
+              cy={lantern.y}
+              r={lantern.r}
               fillOpacity={0.05 + (i % 3) * 0.03}
             />
           ))}
@@ -104,7 +121,7 @@ export function GeneratedArt({ prompt, label, variant = 'panel', seed: seedKey, 
           <stop offset="100%" stopColor="var(--color-sand)" />
         </linearGradient>
         <radialGradient id={`glow-${uid}`} cx="50%" cy="45%" r="58%">
-          <stop offset="0%" stopColor="var(--color-accent)" stopOpacity="0.32" />
+          <stop offset="0%" stopColor="var(--color-accent)" stopOpacity="0.3" />
           <stop offset="100%" stopColor="var(--color-accent)" stopOpacity="0" />
         </radialGradient>
       </defs>
@@ -119,16 +136,24 @@ export function GeneratedArt({ prompt, label, variant = 'panel', seed: seedKey, 
         strokeOpacity="0.5"
         strokeWidth="1.2"
       >
-        {Array.from({ length: petals }, (_, i) => (
-          <path
+        {/* Khatam: two squares at 45°, the classic eight-pointed star */}
+        <rect x="-66" y="-66" width="132" height="132" />
+        <rect x="-66" y="-66" width="132" height="132" transform="rotate(45)" strokeOpacity="0.38" />
+        <rect x="-34" y="-34" width="68" height="68" strokeOpacity="0.32" />
+        <rect x="-34" y="-34" width="68" height="68" transform="rotate(45)" strokeOpacity="0.26" />
+
+        <circle r={innerRing} strokeDasharray={`${ringDash} ${ringDash * 2}`} strokeOpacity="0.38" />
+        <circle r={innerRing + 26} strokeOpacity="0.22" />
+
+        {/* Satellite stars around the ring */}
+        {Array.from({ length: satellites }, (_, i) => (
+          <polygon
             key={i}
-            d="M0 0 C 26 -34, 26 -78, 0 -104 C -26 -78, -26 -34, 0 0 Z"
-            transform={`rotate(${(360 / petals) * i})`}
+            points={starPoints(8, 7, 3)}
+            transform={`rotate(${(360 / satellites) * i}) translate(0 ${-(innerRing + 13)})`}
+            strokeOpacity="0.45"
           />
         ))}
-        <circle r={innerRing} strokeDasharray={`${ringDash} ${ringDash * 2}`} strokeOpacity="0.4" />
-        <circle r={innerRing + 24} strokeOpacity="0.24" />
-        <circle r="9" fill="var(--color-accent)" fillOpacity="0.45" stroke="none" />
       </g>
     </svg>
   );

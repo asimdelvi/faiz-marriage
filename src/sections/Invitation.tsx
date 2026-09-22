@@ -27,20 +27,33 @@ export function Invitation({ config, pair }: Props) {
 
   return (
     <Section id="invitation" tone="paper" eyebrow="The invitation" title="Save the date">
+      {config.blessing?.text ? (
+        <Reveal className="mx-auto mb-10 max-w-2xl text-center">
+          <p className="font-display text-balance text-lg italic leading-relaxed text-primary sm:text-xl">
+            “{config.blessing.text}”
+          </p>
+          {config.blessing.reference ? (
+            <p className="mt-3 text-[0.68rem] uppercase tracking-[0.22em] text-mocha">
+              {config.blessing.reference}
+            </p>
+          ) : null}
+        </Reveal>
+      ) : null}
+
       {config.invitationNote ? (
         <Reveal className="mx-auto max-w-2xl text-center">
-          <p className="font-display text-balance text-xl leading-relaxed text-espresso sm:text-2xl">
+          <p className="text-balance leading-relaxed text-mocha sm:text-lg">
             {config.invitationNote}
           </p>
         </Reveal>
       ) : null}
 
       {details.length ? (
-        <div className="mt-14 grid gap-4 sm:grid-cols-3 sm:gap-6">
+        <div className="mt-10 grid gap-4 sm:grid-cols-3">
           {details.map((detail, index) => (
-            <Reveal key={detail.label} index={index} className="card px-6 py-8 text-center">
+            <Reveal key={detail.label} index={index} className="card px-5 py-6 text-center">
               <p className="eyebrow mb-3">{detail.label}</p>
-              <p className="font-display text-balance text-xl text-espresso sm:text-2xl">
+              <p className="font-display text-balance text-lg text-espresso sm:text-xl">
                 {detail.value}
               </p>
             </Reveal>
@@ -48,10 +61,10 @@ export function Invitation({ config, pair }: Props) {
         </div>
       ) : null}
 
-      <Countdown date={config.weddingDate} time={config.weddingTime} className="mt-14" />
+      <Countdown date={config.weddingDate} time={config.weddingTime} className="mt-10" />
 
       {addToCalendar ? (
-        <Reveal className="mt-12 flex justify-center">
+        <Reveal className="mt-9 flex justify-center">
           <Button href={addToCalendar} variant="outline">
             Add to calendar
           </Button>

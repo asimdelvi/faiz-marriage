@@ -1,25 +1,27 @@
 {
   "_readme": [
-    "NOTE: every value below is PLACEHOLDER content for preview purposes. Replace it with the real details.",
+    "NOTE: every value below is PLACEHOLDER content for preview. Replace it with the real details.",
     "THE ONLY FILE YOU NEED TO EDIT. Fill in the values between the quotes.",
     "Anything left as \"\" or [] hides itself — an empty family list removes the Family section and its menu link.",
-    "weddingDate must be ISO: \"2026-12-12\". weddingTime is free text: \"7:00 PM onwards\" (a clock time in it feeds the countdown).",
+    "weddingDate must be ISO: \"2026-12-12\". weddingTime is free text: \"After Maghrib\" or \"7:00 PM onwards\" (a clock time in it feeds the countdown).",
+    "googleMapsUrl: paste the Share link from Google Maps. Leave it \"\" and the map finds the venue from its name and address.",
     "rsvp.type is one of: whatsapp | form | url | none. For whatsapp, value is the number with country code and no +, e.g. \"919876543210\".",
     "Photos go in public/images/ and are referenced as \"/images/name.jpg\". Music goes in public/music/.",
-    "Any image you leave out is replaced by generated gold artwork, so a half-filled file still looks finished.",
-    "This _readme key is ignored by the site — leave it or delete it.",
-    "family item: { \"id\": \"brides-parents\", \"name\": \"Mr. & Mrs. Sharma\", \"relation\": \"Parents of the Bride\", \"side\": \"bride\", \"note\": \"\", \"image\": { \"src\": \"/images/family-1.jpg\" } }  —  side is bride | groom | both",
+    "Any image you leave out is replaced by generated gold geometry, so a half-filled file still looks finished.",
+    "colors: primary is the deep tone, secondary the soft background, accent the gold. Change these three and the whole site follows.",
+    "family item: { \"id\": \"brides-parents\", \"name\": \"Mr. & Mrs. Rehman\", \"relation\": \"Parents of the Bride\", \"side\": \"bride\", \"note\": \"\", \"image\": { \"src\": \"/images/family-1.jpg\" } }  —  side is bride | groom | both",
     "gallery item: { \"id\": \"g1\", \"src\": \"/images/gallery-1.jpg\", \"caption\": \"The first look\", \"orientation\": \"portrait\" }  —  orientation is portrait | landscape | square",
     "contacts item: { \"name\": \"Imran\", \"phone\": \"+91 98765 43210\", \"relation\": \"Brother of the bride\" }",
-    "Ceremonies: delete any you are not having, reorder them, or add your own — keep each id unique."
+    "Ceremonies: delete any you are not having, reorder them, or add your own — keep each id unique.",
+    "This _readme key is ignored by the site — leave it or delete it."
   ],
   "brideName": "Aaliya",
   "groomName": "Faiz",
   "weddingDate": "2026-12-12",
-  "weddingTime": "7:00 PM onwards",
+  "weddingTime": "Nikah at 4:00 PM · Walima at 7:30 PM",
   "venueName": "The Grand Pavilion, Palm Gardens",
   "venueAddress": "42 Residency Road, Ashok Nagar, Bengaluru 560025, Karnataka",
-  "googleMapsUrl": "",
+  "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=The%20Grand%20Pavilion%2C%20Palm%20Gardens%2C%2042%20Residency%20Road%2C%20Ashok%20Nagar%2C%20Bengaluru%20560025",
   "hashtag": "#AaliyaMeetsFaiz",
   "logo": "",
   "siteUrl": "https://asimdelvi.github.io/faiz-marriage",
@@ -27,20 +29,20 @@
   "heroImage": "",
   "heroVideo": "",
   "heroEyebrow": "Together with our families",
-  "heroSubtitle": "request the pleasure of your company",
-  "invitationNote": "A celebration of love, family and new beginnings — we would be honoured to have you with us.",
+  "heroSubtitle": "request the honour of your presence",
+  "invitationNote": "By the grace of Allah, we invite you to join us for our nikah and to stay on for the walima that evening.",
   "backgroundMusic": "",
   "colors": {
-    "primary": "#8D5B4C",
-    "secondary": "#E8D8C3",
-    "accent": "#C79B63"
+    "primary": "#1E5B4F",
+    "secondary": "#E7DCC6",
+    "accent": "#C9A227"
   },
   "story": [
     {
       "id": "how-we-met",
       "title": "How we met",
       "date": "Winter 2021",
-      "body": "A mutual friend's birthday dinner, a long argument about the best biryani in the city, and a conversation that simply never ended. Neither of us won the argument.",
+      "body": "Introduced by family over chai that went cold twice, and a conversation that simply never ended.",
       "image": {
         "src": "",
         "prompt": "PROMPT_STORY_MEET"
@@ -50,7 +52,7 @@
       "id": "the-promise",
       "title": "The promise",
       "date": "Spring 2026",
-      "body": "A quiet yes on a terrace at sunset, said in front of the people who matter most to us — and then a phone call to every relative before the tea had gone cold.",
+      "body": "A quiet yes in front of both families, and a phone call to every relative before the evening was out.",
       "image": {
         "src": "",
         "prompt": "PROMPT_STORY_PROPOSAL"
@@ -59,75 +61,27 @@
   ],
   "timeline": [
     {
-      "id": "mehendi",
-      "title": "Mehendi",
-      "date": "2026-12-09",
-      "time": "4:00 PM onwards",
-      "venue": "Residence of the Bride, Indiranagar",
-      "description": "Henna, music and the slow, happy hum of the house filling up with family.",
+      "id": "nikah",
+      "title": "Nikah",
+      "date": "2026-12-12",
+      "time": "4:00 PM",
+      "venue": "The Grand Pavilion, Main Hall",
+      "description": "The nikah nama is signed, the qubool hai is said, and dua is made for the years ahead.",
       "image": {
         "src": "",
-        "prompt": "PROMPT_MEHENDI"
+        "prompt": "PROMPT_NIKAH"
       }
     },
     {
-      "id": "haldi",
-      "title": "Haldi",
-      "date": "2026-12-10",
-      "time": "10:00 AM",
-      "venue": "Palm Gardens Courtyard",
-      "description": "Marigolds, turmeric and blessings — the morning everything turns golden.",
-      "image": {
-        "src": "",
-        "prompt": "PROMPT_HALDI"
-      }
-    },
-    {
-      "id": "sangeet",
-      "title": "Sangeet",
-      "date": "2026-12-10",
+      "id": "walima",
+      "title": "Walima",
+      "date": "2026-12-12",
       "time": "7:30 PM onwards",
-      "venue": "The Grand Pavilion, Ballroom",
-      "description": "An evening of rehearsed dances, unrehearsed laughter and far too many encores.",
-      "image": {
-        "src": "",
-        "prompt": "PROMPT_SANGEET"
-      }
-    },
-    {
-      "id": "baraat",
-      "title": "Baraat",
-      "date": "2026-12-12",
-      "time": "5:00 PM",
-      "venue": "Gate 1, Palm Gardens",
-      "description": "The procession arrives — dhol, flowers and a street that belongs to us.",
-      "image": {
-        "src": "",
-        "prompt": "PROMPT_BARAAT"
-      }
-    },
-    {
-      "id": "wedding",
-      "title": "The Wedding",
-      "date": "2026-12-12",
-      "time": "7:00 PM",
-      "venue": "The Grand Pavilion, Main Lawn",
-      "description": "Vows exchanged before the sacred fire, witnessed by everyone we love.",
-      "image": {
-        "src": "",
-        "prompt": "PROMPT_SAAT_PHERE"
-      }
-    },
-    {
-      "id": "reception",
-      "title": "Reception",
-      "date": "2026-12-13",
-      "time": "7:00 PM onwards",
       "venue": "The Grand Pavilion, Terrace",
-      "description": "Dinner, toasts and the first evening as husband and wife.",
+      "description": "Dinner, duas and the first evening hosted together as husband and wife.",
       "image": {
         "src": "",
-        "prompt": "PROMPT_DINNER"
+        "prompt": "PROMPT_WALIMA"
       }
     }
   ],
@@ -144,24 +98,24 @@
       "name": "Mr. & Mrs. Delvi",
       "relation": "Parents of the Groom",
       "side": "groom",
-      "note": "Forty years married, and still the loudest on the dance floor."
+      "note": "Forty years married, and still the first to reach the dinner table."
     },
     {
-      "id": "brides-grandmother",
+      "id": "nani",
       "name": "Ammi Jaan",
       "relation": "Grandmother of the Bride",
       "side": "bride",
       "note": "The first person we told."
     },
     {
-      "id": "brides-sister",
+      "id": "sister",
       "name": "Zara & Imran",
       "relation": "Sister and Brother-in-law",
       "side": "bride",
       "note": "Chief planners, chief troublemakers."
     },
     {
-      "id": "grooms-brother",
+      "id": "brother",
       "name": "Adnan",
       "relation": "Brother of the Groom",
       "side": "groom",
@@ -170,7 +124,7 @@
     {
       "id": "cousins",
       "name": "The Cousins",
-      "relation": "Sangeet Committee",
+      "relation": "Mehendi Committee",
       "side": "both",
       "note": "Rehearsing since August. Expect choreography."
     }
@@ -217,12 +171,12 @@
     "src": "",
     "prompt": "PROMPT_VENUE"
   },
-  "venueNote": "Valet parking at Gate 2. Please arrive twenty minutes before the muhurat.",
+  "venueNote": "Both the nikah and the walima are at the same venue. Valet parking at Gate 2; please arrive twenty minutes before the nikah.",
   "rsvp": {
     "type": "whatsapp",
     "value": "919876543210",
     "label": "RSVP",
-    "message": "Hi! We would love to attend Aaliya & Faiz's wedding.",
+    "message": "Assalamu alaikum! We would love to attend Aaliya & Faiz's nikah.",
     "deadline": "2026-11-20",
     "note": "Kindly let us know by the date above so we can plan the seating."
   },
@@ -246,5 +200,11 @@
     "description": "",
     "ogImage": ""
   },
-  "imageGenerator": ""
+  "imageGenerator": "",
+  "bismillah": "بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ",
+  "blessing": {
+    "text": "And among His signs is that He created for you mates from among yourselves, that you may dwell in tranquillity with them, and He has put love and mercy between your hearts.",
+    "reference": "Surah Ar-Rum 30:21"
+  },
+  "footerNote": "Your duas and your presence are the greatest blessings we could ask for. Insha'Allah, we will see you there."
 }

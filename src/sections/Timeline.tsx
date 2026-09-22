@@ -10,130 +10,116 @@ type Props = { events: TimelineEvent[]; fallbackMapsUrl?: string };
 /** Picks a context-aware fallback prompt from the ceremony's name. */
 function promptKeyFor(event: TimelineEvent): PromptKey {
   const key = `${event.id} ${event.title}`.toLowerCase();
+  if (key.includes('mangni') || key.includes('engagement') || key.includes('nisbat'))
+    return 'PROMPT_MANGNI';
   if (key.includes('mehendi') || key.includes('mehndi') || key.includes('henna')) return 'PROMPT_MEHENDI';
-  if (key.includes('haldi')) return 'PROMPT_HALDI';
-  if (key.includes('sangeet') || key.includes('dance')) return 'PROMPT_SANGEET';
+  if (key.includes('haldi') || key.includes('manjha') || key.includes('ubtan')) return 'PROMPT_HALDI';
+  if (key.includes('sangeet') || key.includes('dholki') || key.includes('dance')) return 'PROMPT_SANGEET';
   if (key.includes('baraat') || key.includes('barat')) return 'PROMPT_BARAAT';
-  if (key.includes('reception')) return 'PROMPT_RECEPTION';
-  if (key.includes('dinner') || key.includes('lunch') || key.includes('feast')) return 'PROMPT_DINNER';
-  if (key.includes('phere') || key.includes('wedding') || key.includes('nikah') || key.includes('vivah'))
-    return 'PROMPT_SAAT_PHERE';
+  if (key.includes('walima') || key.includes('reception')) return 'PROMPT_WALIMA';
+  if (key.includes('dinner') || key.includes('lunch') || key.includes('dawat')) return 'PROMPT_DINNER';
+  if (key.includes('nikah') || key.includes('nikkah') || key.includes('wedding'))
+    return 'PROMPT_NIKAH';
   return 'PROMPT_HERO_COUPLE';
 }
 
 export function Timeline({ events, fallbackMapsUrl }: Props) {
   if (!events.length) return null;
 
+  /* When every gathering falls on one date, say so rather than "days". */
+  const dates = new Set(events.map((event) => event.date).filter(Boolean));
+  const oneDay = dates.size <= 1;
+
+  /* One card fills the row, two sit side by side, more wrap into three. */
+  const columns =
+    events.length === 1
+      ? 'max-w-xl mx-auto'
+      : events.length === 2
+        ? 'sm:grid-cols-2 max-w-4xl mx-auto'
+        : 'sm:grid-cols-2 lg:grid-cols-3';
+
   return (
     <Section
       id="events"
       tone="cream"
       eyebrow="The celebrations"
-      title="Days of joy"
-      description="Every ritual, in the order the days will unfold. We would love to see you at each one."
+      title={oneDay ? 'The day itself' : 'Days of joy'}
+      description={
+        oneDay
+          ? 'How the day will unfold. We would love to see you through all of it.'
+          : 'Every gathering, in the order the days will unfold.'
+      }
     >
-      <div className="relative">
-        {/* The gold thread running through the ceremonies (desktop only). */}
-        <div
-          aria-hidden="true"
-          className="absolute left-1/2 top-0 hidden h-full w-px -translate-x-1/2 bg-[linear-gradient(180deg,transparent,color-mix(in_srgb,var(--color-accent)_60%,transparent)_12%,color-mix(in_srgb,var(--color-accent)_60%,transparent)_88%,transparent)] lg:block"
-        />
+      <ol className={`grid gap-5 sm:gap-6 ${columns}`}>
+        {events.map((event, index) => {
+          const date = event.date ? formatShortDate(event.date) || event.date : '';
+          const mapsUrl = event.mapsUrl || fallbackMapsUrl;
 
-        <ol className="space-y-8 lg:space-y-16">
-          {events.map((event, index) => {
-            const left = index % 2 === 0;
-            const date = event.date ? formatShortDate(event.date) || event.date : '';
-            const mapsUrl = event.mapsUrl || fallbackMapsUrl;
-
-            return (
-              <Reveal
-                as="li"
-                key={event.id}
-                index={index % 3}
-                className="relative lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:gap-10"
-              >
-                <div className={left ? 'lg:col-start-1' : 'lg:col-start-3 lg:row-start-1'}>
-                  <article className="card group overflow-hidden">
-                    <div className="overflow-hidden">
-                      <SmartImage
-                        image={event.image}
-                        fallbackKey={promptKeyFor(event)}
-                        alt={event.title}
-                        label={event.title}
-                        ratio="16 / 10"
-                        sizes="(max-width: 1024px) 92vw, 42vw"
-                        imgClassName="group-hover:scale-[1.06]"
-                      />
-                    </div>
-                    <div className="px-6 py-7 sm:px-8 sm:py-8">
-                      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                        <h3 className="font-display text-2xl text-espresso sm:text-3xl">
-                          {event.title}
-                        </h3>
-                        {date || event.time ? (
-                          <p className="text-[0.72rem] uppercase tracking-[0.18em] text-primary">
-                            {[date, event.time].filter(Boolean).join(' · ')}
-                          </p>
-                        ) : null}
-                      </div>
-                      {event.description ? (
-                        <p className="mt-4 text-balance leading-relaxed text-mocha">
-                          {event.description}
-                        </p>
-                      ) : null}
-                      {event.venue ? (
-                        <p className="mt-5 flex items-start gap-2 text-sm text-mocha/90">
-                          <svg
-                            aria-hidden="true"
-                            width="15"
-                            height="15"
-                            viewBox="0 0 16 16"
-                            fill="none"
-                            className="mt-0.5 shrink-0 text-accent"
-                          >
-                            <path
-                              d="M8 1.5c2.5 0 4.5 2 4.5 4.5 0 3.2-4.5 8.5-4.5 8.5S3.5 9.2 3.5 6A4.5 4.5 0 0 1 8 1.5Z"
-                              stroke="currentColor"
-                              strokeWidth="1.2"
-                            />
-                            <circle cx="8" cy="6" r="1.6" fill="currentColor" />
-                          </svg>
-                          <span>{event.venue}</span>
-                        </p>
-                      ) : null}
-                      {mapsUrl ? (
-                        <a
-                          href={mapsUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="mt-5 inline-flex items-center gap-1.5 text-[0.72rem] uppercase tracking-[0.18em] text-primary underline-offset-4 hover:underline"
-                        >
-                          Directions
-                          <span aria-hidden="true">→</span>
-                        </a>
-                      ) : null}
-                    </div>
-                  </article>
-                </div>
-
-                {/* Centre marker */}
-                <div className="hidden lg:col-start-2 lg:flex lg:items-center lg:justify-center">
-                  <span className="relative flex h-4 w-4 items-center justify-center">
-                    <span className="absolute inline-flex h-9 w-9 rounded-full bg-[color-mix(in_srgb,var(--color-accent)_22%,transparent)]" />
-                    <span className="relative inline-flex h-3 w-3 rounded-full bg-accent" />
+          return (
+            <Reveal as="li" key={event.id} index={index % 3} className="h-full">
+              <article className="card group flex h-full flex-col overflow-hidden">
+                <div className="relative overflow-hidden">
+                  <SmartImage
+                    image={event.image}
+                    fallbackKey={promptKeyFor(event)}
+                    alt={event.title}
+                    label={event.title}
+                    ratio="16 / 9"
+                    sizes="(max-width: 640px) 92vw, (max-width: 1024px) 46vw, 31vw"
+                    imgClassName="group-hover:scale-[1.06]"
+                  />
+                  <span className="font-display absolute right-3 top-3 rounded-full bg-[color-mix(in_srgb,var(--color-ivory)_88%,transparent)] px-3 py-1 text-xs tracking-[0.12em] text-primary">
+                    {String(index + 1).padStart(2, '0')}
                   </span>
                 </div>
 
-                <div className={`hidden lg:block ${left ? 'lg:col-start-3' : 'lg:col-start-1 lg:row-start-1'}`}>
-                  <p className="font-display text-center text-5xl text-[color-mix(in_srgb,var(--color-accent)_55%,transparent)]">
-                    {String(index + 1).padStart(2, '0')}
-                  </p>
+                <div className="flex flex-1 flex-col px-5 py-5">
+                  <h3 className="font-display text-xl text-espresso sm:text-2xl">{event.title}</h3>
+                  {date || event.time ? (
+                    <p className="mt-1.5 text-[0.68rem] uppercase tracking-[0.16em] text-primary">
+                      {[date, event.time].filter(Boolean).join(' · ')}
+                    </p>
+                  ) : null}
+                  {event.venue ? (
+                    <p className="mt-2.5 flex items-start gap-1.5 text-sm leading-snug text-mocha/90">
+                      <svg
+                        aria-hidden="true"
+                        width="13"
+                        height="13"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        className="mt-0.5 shrink-0 text-accent"
+                      >
+                        <path
+                          d="M8 1.5c2.5 0 4.5 2 4.5 4.5 0 3.2-4.5 8.5-4.5 8.5S3.5 9.2 3.5 6A4.5 4.5 0 0 1 8 1.5Z"
+                          stroke="currentColor"
+                          strokeWidth="1.2"
+                        />
+                        <circle cx="8" cy="6" r="1.6" fill="currentColor" />
+                      </svg>
+                      <span>{event.venue}</span>
+                    </p>
+                  ) : null}
+                  {event.description ? (
+                    <p className="mt-3 text-sm leading-relaxed text-mocha">{event.description}</p>
+                  ) : null}
+                  {mapsUrl ? (
+                    <a
+                      href={mapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-auto inline-flex items-center gap-1.5 pt-4 text-[0.68rem] uppercase tracking-[0.16em] text-primary underline-offset-4 hover:underline"
+                    >
+                      Directions
+                      <span aria-hidden="true">→</span>
+                    </a>
+                  ) : null}
                 </div>
-              </Reveal>
-            );
-          })}
-        </ol>
-      </div>
+              </article>
+            </Reveal>
+          );
+        })}
+      </ol>
     </Section>
   );
 }

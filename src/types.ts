@@ -95,6 +95,14 @@ export type SiteConfig = {
   locale?: string;
   /** Small line above the names in the hero, e.g. "Together with our families". */
   heroEyebrow?: string;
+  /** Opening invocation shown above everything, e.g. the Bismillah in Arabic. */
+  bismillah?: string;
+  /** Transliteration or translation shown under `bismillah`. */
+  bismillahMeaning?: string;
+  /** A verse or dua printed in the invitation. */
+  blessing?: { text: string; reference?: string };
+  /** Closing line in the footer. */
+  footerNote?: string;
   /** Line under the names, e.g. "are getting married". */
   heroSubtitle?: string;
   invitationNote?: string;

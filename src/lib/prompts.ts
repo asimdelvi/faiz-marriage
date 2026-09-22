@@ -5,35 +5,37 @@
  */
 export const PROMPTS = {
   PROMPT_HERO:
-    'Ultra realistic luxury Indian wedding couple during golden hour, elegant traditional attire, editorial wedding photography, shallow depth of field, premium lighting, warm cinematic colors, 8K.',
+    'Ultra realistic luxury Indian Muslim wedding couple during golden hour, bride in an ornate gharara with a jewelled dupatta, groom in an embroidered sherwani, editorial wedding photography, shallow depth of field, premium lighting, warm cinematic colors, 8K.',
   PROMPT_HERO_COUPLE:
-    'Ultra realistic Indian bride and groom during golden hour, premium editorial wedding photography, soft bokeh, luxury styling, 8K.',
+    'Ultra realistic Indian Muslim bride and groom during golden hour, sherwani and gharara, premium editorial wedding photography, soft bokeh, luxury styling, 8K.',
   PROMPT_VENUE:
-    'Luxury floral mandap with warm fairy lights, elegant décor, cinematic wedding venue, premium destination wedding aesthetic.',
+    'Luxury nikah stage with a floral arch and warm fairy lights, elegant Islamic geometric décor, cinematic wedding venue, premium destination wedding aesthetic.',
   PROMPT_FAMILY:
-    'Warm candid Indian family portrait in traditional attire, multi-generational, coordinated festive clothing, editorial quality, natural window light.',
+    'Warm candid Indian Muslim family portrait in traditional attire, multi-generational, coordinated festive clothing, editorial quality, natural window light.',
   PROMPT_DINNER:
-    'Luxury Indian wedding buffet with elegant table styling, candlelight, gold cutlery, editorial food photography.',
-  PROMPT_SAAT_PHERE:
-    'Traditional Hindu wedding ceremony around the sacred fire inside a floral mandap, warm cinematic light, documentary wedding photography.',
+    'Luxury walima dinner with elegant table styling, candlelight, gold cutlery, biryani and kebabs beautifully plated, editorial food photography.',
+  PROMPT_NIKAH:
+    'Indian Muslim nikah ceremony, the couple seated before an ornate floral backdrop as the nikah nama is signed, elders offering dua, warm cinematic light, documentary wedding photography.',
   PROMPT_BACKGROUND:
-    'Elegant ivory textured paper with subtle gold floral embossing, seamless, soft studio light.',
+    'Elegant ivory textured paper with subtle gold Islamic geometric embossing, eight-pointed star tessellation, seamless, soft studio light.',
+  PROMPT_MANGNI:
+    'Indian Muslim engagement ceremony, rings exchanged on a decorated tray with flowers, families watching, warm editorial photography, soft bokeh.',
   PROMPT_MEHENDI:
-    'Close up of intricate bridal mehendi henna on hands, marigold petals, soft golden light, luxury Indian wedding photography, shallow depth of field.',
+    'Close up of intricate bridal mehendi henna on hands, roses and marigold petals, soft golden light, luxury Indian wedding photography, shallow depth of field.',
   PROMPT_HALDI:
-    'Indian haldi ceremony, turmeric paste and marigold garlands, laughing family, bright airy courtyard, editorial wedding photography, vibrant warm colors.',
+    'Indian Muslim manjha ceremony, turmeric paste and yellow florals, laughing family in yellow attire, bright airy courtyard, editorial wedding photography, vibrant warm colors.',
   PROMPT_SANGEET:
-    'Indian sangeet night, family dancing on a decorated stage, warm stage lighting and bokeh, luxury wedding photography, cinematic motion.',
+    'Indian Muslim mehendi night, family dancing on a decorated stage, warm stage lighting and bokeh, luxury wedding photography, cinematic motion.',
   PROMPT_BARAAT:
-    'Indian groom riding a decorated horse, family dancing, marigold flowers, luxury wedding photography, sunset, vibrant colors, cinematic realism.',
-  PROMPT_RECEPTION:
-    'Elegant Indian wedding reception, couple on a floral stage, chandeliers and fairy lights, luxury editorial photography, warm champagne tones.',
+    'Indian Muslim groom in an embroidered sherwani and sehra arriving with the baraat, family dancing, flowers and lanterns, luxury wedding photography, sunset, vibrant colors, cinematic realism.',
+  PROMPT_WALIMA:
+    'Elegant walima reception, the couple on a floral stage, chandeliers and fairy lights, luxury editorial photography, warm champagne and emerald tones.',
   PROMPT_STORY_MEET:
-    'Candid portrait of a young Indian couple laughing together, golden hour, film grain, editorial engagement photography, shallow depth of field.',
+    'Candid portrait of a young Indian Muslim couple laughing together, golden hour, film grain, editorial engagement photography, shallow depth of field.',
   PROMPT_STORY_PROPOSAL:
-    'Indian couple holding hands with a ring, soft marigold bokeh background, intimate editorial photography, warm cinematic tones.',
+    'Indian Muslim couple holding hands with a ring, soft floral bokeh background, intimate editorial photography, warm cinematic tones.',
   PROMPT_GALLERY:
-    'Luxury Indian pre-wedding editorial photograph, warm champagne tones, soft bokeh, premium styling, 8K.',
+    'Luxury Indian Muslim pre-wedding editorial photograph, warm champagne tones, soft bokeh, premium styling, 8K.',
 } as const;
 
 export type PromptKey = keyof typeof PROMPTS;

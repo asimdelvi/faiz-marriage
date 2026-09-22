@@ -41,11 +41,11 @@ export function Countdown({ date, time, className = '' }: Props) {
       aria-label={`${countdown.days} days until the wedding`}
     >
       {UNITS.map((unit, index) => (
-        <Reveal key={unit.key} index={index} className="card px-2 py-5 text-center sm:px-4 sm:py-7">
-          <span className="font-display block text-3xl tabular-nums text-espresso sm:text-5xl">
+        <Reveal key={unit.key} index={index} className="card px-2 py-4 text-center sm:px-4 sm:py-5">
+          <span className="font-display block text-2xl tabular-nums text-espresso sm:text-4xl">
             {String(countdown[unit.key]).padStart(2, '0')}
           </span>
-          <span className="mt-2 block text-[0.6rem] uppercase tracking-[0.22em] text-mocha sm:text-xs">
+          <span className="mt-1.5 block text-[0.58rem] uppercase tracking-[0.2em] text-mocha sm:text-[0.68rem]">
             {unit.label}
           </span>
         </Reveal>

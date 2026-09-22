@@ -36,24 +36,24 @@ export function Section({
     <section
       id={id}
       aria-labelledby={title ? `${id}-title` : undefined}
-      className={`scroll-mt-24 px-5 py-20 sm:px-8 sm:py-24 lg:py-32 ${tones[tone]} ${className}`}
+      className={`scroll-mt-20 px-5 py-14 sm:px-8 sm:py-16 lg:py-20 ${tones[tone]} ${className}`}
     >
       <div className="mx-auto w-full max-w-6xl">
         {headed ? (
-          <Reveal className={`mb-12 sm:mb-16 ${align === 'center' ? 'text-center' : ''}`}>
+          <Reveal className={`mb-9 sm:mb-12 ${align === 'center' ? 'text-center' : ''}`}>
             {eyebrow ? <p className="eyebrow mb-4">{eyebrow}</p> : null}
             {title ? (
               <h2
                 id={`${id}-title`}
-                className="font-display text-balance text-[2.1rem] leading-[1.15] text-espresso sm:text-5xl"
+                className="font-display text-balance text-[1.9rem] leading-[1.15] text-espresso sm:text-4xl"
               >
                 {title}
               </h2>
             ) : null}
-            <Ornament className={`mt-6 ${align === 'center' ? 'mx-auto' : ''}`} />
+            <Ornament className={`mt-5 ${align === 'center' ? 'mx-auto' : ''}`} width={150} />
             {description ? (
               <p
-                className={`mt-6 max-w-2xl text-balance text-[0.98rem] leading-relaxed text-mocha sm:text-lg ${
+                className={`mt-4 max-w-2xl text-balance text-[0.95rem] leading-relaxed text-mocha sm:text-base ${
                   align === 'center' ? 'mx-auto' : ''
                 }`}
               >
