@@ -92,10 +92,13 @@ branch, and can be run by hand from the Actions tab. The site lands at:
 One-time setup in the repository settings:
 
 1. **Settings → Pages → Build and deployment → Source: GitHub Actions.**
-   (The workflow also tries to turn this on by itself via `configure-pages`.)
+   This has to be done by hand once — the workflow token is not permitted to
+   create the Pages site, so the deploy job fails until it is set.
 2. GitHub Pages on a **private** repository needs a paid plan (Pro/Team/
    Enterprise). On a free account, make the repository public first —
    Settings → General → Danger Zone → Change visibility.
+3. Re-run the workflow (Actions → Deploy to GitHub Pages → Run workflow), or
+   just push again.
 
 The build is served from a subdirectory, so `vite.config.ts` sets
 `base: '/faiz-marriage/'` and every site-root path in the config (`/images/…`,
