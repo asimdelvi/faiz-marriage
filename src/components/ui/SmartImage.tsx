@@ -52,6 +52,7 @@ export function SmartImage({
           prompt={resolved.prompt}
           label={label ?? alt}
           variant={artVariant}
+          seed={label || alt}
           className="h-full w-full object-cover"
         />
       ) : (

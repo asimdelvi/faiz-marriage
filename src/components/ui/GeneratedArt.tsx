@@ -8,6 +8,11 @@ type Props = {
   label?: string;
   /** 'panel' suits cards; 'hero' paints a wide, cinematic backdrop. */
   variant?: 'panel' | 'hero';
+  /**
+   * Distinguishes artwork that shares a prompt — without it every family card
+   * (all drawn from the same prompt) would come out identical.
+   */
+  seed?: string;
   className?: string;
 };
 
@@ -16,19 +21,21 @@ type Props = {
  * Deterministic per prompt, uses the configured palette, weighs ~2 KB and
  * makes zero network requests — so a half-filled config still looks intentional.
  */
-export function GeneratedArt({ prompt, label, variant = 'panel', className }: Props) {
+export function GeneratedArt({ prompt, label, variant = 'panel', seed: seedKey, className }: Props) {
   const uid = useId().replace(/:/g, '');
-  const seed = hashString(prompt);
-  const petals = 8 + (seed % 5);
-  const rotation = seed % 30;
-  const ringDash = 4 + (seed % 5);
+  const signature = seedKey ? `${prompt}|${seedKey}` : prompt;
+  const seed = hashString(signature);
+  const petals = 7 + (seed % 6);
+  const rotation = seed % 45;
+  const ringDash = 3 + (seed % 6);
+  const innerRing = 108 + (seed % 18);
   const title = label ? `Artwork placeholder: ${label}` : 'Decorative artwork placeholder';
 
   if (variant === 'hero') {
     const motes = Array.from({ length: 10 }, (_, i) => {
-      const x = hashString(`${prompt}-x-${i}`) % 1600;
-      const y = 90 + (hashString(`${prompt}-y-${i}`) % 720);
-      const r = 3 + (hashString(`${prompt}-r-${i}`) % 6);
+      const x = hashString(`${signature}-x-${i}`) % 1600;
+      const y = 90 + (hashString(`${signature}-y-${i}`) % 720);
+      const r = 3 + (hashString(`${signature}-r-${i}`) % 6);
       return { x, y, r };
     });
 
@@ -119,8 +126,8 @@ export function GeneratedArt({ prompt, label, variant = 'panel', className }: Pr
             transform={`rotate(${(360 / petals) * i})`}
           />
         ))}
-        <circle r="118" strokeDasharray={`${ringDash} ${ringDash * 2}`} strokeOpacity="0.4" />
-        <circle r="142" strokeOpacity="0.24" />
+        <circle r={innerRing} strokeDasharray={`${ringDash} ${ringDash * 2}`} strokeOpacity="0.4" />
+        <circle r={innerRing + 24} strokeOpacity="0.24" />
         <circle r="9" fill="var(--color-accent)" fillOpacity="0.45" stroke="none" />
       </g>
     </svg>

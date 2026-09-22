@@ -1,5 +1,6 @@
 {
   "_readme": [
+    "NOTE: every value below is PLACEHOLDER content for preview purposes. Replace it with the real details.",
     "THE ONLY FILE YOU NEED TO EDIT. Fill in the values between the quotes.",
     "Anything left as \"\" or [] hides itself — an empty family list removes the Family section and its menu link.",
     "weddingDate must be ISO: \"2026-12-12\". weddingTime is free text: \"7:00 PM onwards\" (a clock time in it feeds the countdown).",
@@ -12,14 +13,14 @@
     "contacts item: { \"name\": \"Imran\", \"phone\": \"+91 98765 43210\", \"relation\": \"Brother of the bride\" }",
     "Ceremonies: delete any you are not having, reorder them, or add your own — keep each id unique."
   ],
-  "brideName": "",
-  "groomName": "",
-  "weddingDate": "",
-  "weddingTime": "",
-  "venueName": "",
-  "venueAddress": "",
+  "brideName": "Aaliya",
+  "groomName": "Faiz",
+  "weddingDate": "2026-12-12",
+  "weddingTime": "7:00 PM onwards",
+  "venueName": "The Grand Pavilion, Palm Gardens",
+  "venueAddress": "42 Residency Road, Ashok Nagar, Bengaluru 560025, Karnataka",
   "googleMapsUrl": "",
-  "hashtag": "",
+  "hashtag": "#AaliyaMeetsFaiz",
   "logo": "",
   "siteUrl": "https://asimdelvi.github.io/faiz-marriage",
   "locale": "en_IN",
@@ -38,7 +39,8 @@
     {
       "id": "how-we-met",
       "title": "How we met",
-      "body": "Two families, one introduction, and a conversation that simply never ended.",
+      "date": "Winter 2021",
+      "body": "A mutual friend's birthday dinner, a long argument about the best biryani in the city, and a conversation that simply never ended. Neither of us won the argument.",
       "image": {
         "src": "",
         "prompt": "PROMPT_STORY_MEET"
@@ -47,7 +49,8 @@
     {
       "id": "the-promise",
       "title": "The promise",
-      "body": "A quiet yes, said in front of the people who matter most to us.",
+      "date": "Spring 2026",
+      "body": "A quiet yes on a terrace at sunset, said in front of the people who matter most to us — and then a phone call to every relative before the tea had gone cold.",
       "image": {
         "src": "",
         "prompt": "PROMPT_STORY_PROPOSAL"
@@ -58,9 +61,9 @@
     {
       "id": "mehendi",
       "title": "Mehendi",
-      "date": "",
-      "time": "",
-      "venue": "",
+      "date": "2026-12-09",
+      "time": "4:00 PM onwards",
+      "venue": "Residence of the Bride, Indiranagar",
       "description": "Henna, music and the slow, happy hum of the house filling up with family.",
       "image": {
         "src": "",
@@ -70,9 +73,9 @@
     {
       "id": "haldi",
       "title": "Haldi",
-      "date": "",
-      "time": "",
-      "venue": "",
+      "date": "2026-12-10",
+      "time": "10:00 AM",
+      "venue": "Palm Gardens Courtyard",
       "description": "Marigolds, turmeric and blessings — the morning everything turns golden.",
       "image": {
         "src": "",
@@ -82,9 +85,9 @@
     {
       "id": "sangeet",
       "title": "Sangeet",
-      "date": "",
-      "time": "",
-      "venue": "",
+      "date": "2026-12-10",
+      "time": "7:30 PM onwards",
+      "venue": "The Grand Pavilion, Ballroom",
       "description": "An evening of rehearsed dances, unrehearsed laughter and far too many encores.",
       "image": {
         "src": "",
@@ -94,9 +97,9 @@
     {
       "id": "baraat",
       "title": "Baraat",
-      "date": "",
-      "time": "",
-      "venue": "",
+      "date": "2026-12-12",
+      "time": "5:00 PM",
+      "venue": "Gate 1, Palm Gardens",
       "description": "The procession arrives — dhol, flowers and a street that belongs to us.",
       "image": {
         "src": "",
@@ -106,9 +109,9 @@
     {
       "id": "wedding",
       "title": "The Wedding",
-      "date": "",
-      "time": "",
-      "venue": "",
+      "date": "2026-12-12",
+      "time": "7:00 PM",
+      "venue": "The Grand Pavilion, Main Lawn",
       "description": "Vows exchanged before the sacred fire, witnessed by everyone we love.",
       "image": {
         "src": "",
@@ -118,9 +121,9 @@
     {
       "id": "reception",
       "title": "Reception",
-      "date": "",
-      "time": "",
-      "venue": "",
+      "date": "2026-12-13",
+      "time": "7:00 PM onwards",
+      "venue": "The Grand Pavilion, Terrace",
       "description": "Dinner, toasts and the first evening as husband and wife.",
       "image": {
         "src": "",
@@ -128,25 +131,116 @@
       }
     }
   ],
-  "family": [],
-  "gallery": [],
+  "family": [
+    {
+      "id": "brides-parents",
+      "name": "Mr. & Mrs. Rehman",
+      "relation": "Parents of the Bride",
+      "side": "bride",
+      "note": "Who taught us that a full house is a happy one."
+    },
+    {
+      "id": "grooms-parents",
+      "name": "Mr. & Mrs. Delvi",
+      "relation": "Parents of the Groom",
+      "side": "groom",
+      "note": "Forty years married, and still the loudest on the dance floor."
+    },
+    {
+      "id": "brides-grandmother",
+      "name": "Ammi Jaan",
+      "relation": "Grandmother of the Bride",
+      "side": "bride",
+      "note": "The first person we told."
+    },
+    {
+      "id": "brides-sister",
+      "name": "Zara & Imran",
+      "relation": "Sister and Brother-in-law",
+      "side": "bride",
+      "note": "Chief planners, chief troublemakers."
+    },
+    {
+      "id": "grooms-brother",
+      "name": "Adnan",
+      "relation": "Brother of the Groom",
+      "side": "groom",
+      "note": "In charge of the baraat, and taking it very seriously."
+    },
+    {
+      "id": "cousins",
+      "name": "The Cousins",
+      "relation": "Sangeet Committee",
+      "side": "both",
+      "note": "Rehearsing since August. Expect choreography."
+    }
+  ],
+  "gallery": [
+    {
+      "id": "g1",
+      "src": "",
+      "caption": "The first look",
+      "orientation": "portrait"
+    },
+    {
+      "id": "g2",
+      "src": "",
+      "caption": "Haldi mornings",
+      "orientation": "landscape"
+    },
+    {
+      "id": "g3",
+      "src": "",
+      "caption": "Mehendi detail",
+      "orientation": "square"
+    },
+    {
+      "id": "g4",
+      "src": "",
+      "caption": "Golden hour",
+      "orientation": "portrait"
+    },
+    {
+      "id": "g5",
+      "src": "",
+      "caption": "The sangeet stage",
+      "orientation": "landscape"
+    },
+    {
+      "id": "g6",
+      "src": "",
+      "caption": "Us, mostly laughing",
+      "orientation": "portrait"
+    }
+  ],
   "venueImage": {
     "src": "",
     "prompt": "PROMPT_VENUE"
   },
-  "venueNote": "Valet parking available. Please arrive a little before the muhurat.",
+  "venueNote": "Valet parking at Gate 2. Please arrive twenty minutes before the muhurat.",
   "rsvp": {
-    "type": "none",
-    "value": "",
+    "type": "whatsapp",
+    "value": "919876543210",
     "label": "RSVP",
-    "message": "Hi! We would love to attend the wedding.",
-    "deadline": "",
+    "message": "Hi! We would love to attend Aaliya & Faiz's wedding.",
+    "deadline": "2026-11-20",
     "note": "Kindly let us know by the date above so we can plan the seating."
   },
   "socialLinks": {
-    "instagram": ""
+    "instagram": "aaliyameetsfaiz"
   },
-  "contacts": [],
+  "contacts": [
+    {
+      "name": "Imran",
+      "phone": "+91 98765 43210",
+      "relation": "Brother of the bride"
+    },
+    {
+      "name": "Adnan",
+      "phone": "+91 98765 43211",
+      "relation": "Brother of the groom"
+    }
+  ],
   "seo": {
     "title": "",
     "description": "",
