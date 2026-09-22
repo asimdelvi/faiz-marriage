@@ -41,9 +41,12 @@ jobs:
       - name: Add SPA fallback
         run: cp dist/index.html dist/404.html
 
-      # Requires Settings -> Pages -> Source: GitHub Actions (one-time, by hand:
-      # the workflow token is not allowed to create the Pages site itself).
+      # enablement turns Pages on for the repository on the first run. It needs
+      # a public repo (or a paid plan); otherwise switch the source to GitHub
+      # Actions by hand in Settings -> Pages.
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - uses: actions/upload-pages-artifact@v3
         with:
