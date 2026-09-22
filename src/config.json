@@ -18,7 +18,7 @@
   "brideName": "Aaliya",
   "groomName": "Faiz",
   "weddingDate": "2026-12-12",
-  "weddingTime": "Nikah at 4:00 PM · Walima at 7:30 PM",
+  "weddingTime": "Nikah 4:00 PM · Walima 7:30 PM",
   "venueName": "The Grand Pavilion, Palm Gardens",
   "venueAddress": "42 Residency Road, Ashok Nagar, Bengaluru 560025, Karnataka",
   "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=The%20Grand%20Pavilion%2C%20Palm%20Gardens%2C%2042%20Residency%20Road%2C%20Ashok%20Nagar%2C%20Bengaluru%20560025",
@@ -37,28 +37,7 @@
     "secondary": "#E7DCC6",
     "accent": "#C9A227"
   },
-  "story": [
-    {
-      "id": "how-we-met",
-      "title": "How we met",
-      "date": "Winter 2021",
-      "body": "Introduced by family over chai that went cold twice, and a conversation that simply never ended.",
-      "image": {
-        "src": "",
-        "prompt": "PROMPT_STORY_MEET"
-      }
-    },
-    {
-      "id": "the-promise",
-      "title": "The promise",
-      "date": "Spring 2026",
-      "body": "A quiet yes in front of both families, and a phone call to every relative before the evening was out.",
-      "image": {
-        "src": "",
-        "prompt": "PROMPT_STORY_PROPOSAL"
-      }
-    }
-  ],
+  "story": [],
   "timeline": [
     {
       "id": "nikah",
@@ -85,88 +64,8 @@
       }
     }
   ],
-  "family": [
-    {
-      "id": "brides-parents",
-      "name": "Mr. & Mrs. Rehman",
-      "relation": "Parents of the Bride",
-      "side": "bride",
-      "note": "Who taught us that a full house is a happy one."
-    },
-    {
-      "id": "grooms-parents",
-      "name": "Mr. & Mrs. Delvi",
-      "relation": "Parents of the Groom",
-      "side": "groom",
-      "note": "Forty years married, and still the first to reach the dinner table."
-    },
-    {
-      "id": "nani",
-      "name": "Ammi Jaan",
-      "relation": "Grandmother of the Bride",
-      "side": "bride",
-      "note": "The first person we told."
-    },
-    {
-      "id": "sister",
-      "name": "Zara & Imran",
-      "relation": "Sister and Brother-in-law",
-      "side": "bride",
-      "note": "Chief planners, chief troublemakers."
-    },
-    {
-      "id": "brother",
-      "name": "Adnan",
-      "relation": "Brother of the Groom",
-      "side": "groom",
-      "note": "In charge of the baraat, and taking it very seriously."
-    },
-    {
-      "id": "cousins",
-      "name": "The Cousins",
-      "relation": "Mehendi Committee",
-      "side": "both",
-      "note": "Rehearsing since August. Expect choreography."
-    }
-  ],
-  "gallery": [
-    {
-      "id": "g1",
-      "src": "",
-      "caption": "The first look",
-      "orientation": "portrait"
-    },
-    {
-      "id": "g2",
-      "src": "",
-      "caption": "Haldi mornings",
-      "orientation": "landscape"
-    },
-    {
-      "id": "g3",
-      "src": "",
-      "caption": "Mehendi detail",
-      "orientation": "square"
-    },
-    {
-      "id": "g4",
-      "src": "",
-      "caption": "Golden hour",
-      "orientation": "portrait"
-    },
-    {
-      "id": "g5",
-      "src": "",
-      "caption": "The sangeet stage",
-      "orientation": "landscape"
-    },
-    {
-      "id": "g6",
-      "src": "",
-      "caption": "Us, mostly laughing",
-      "orientation": "portrait"
-    }
-  ],
+  "family": [],
+  "gallery": [],
   "venueImage": {
     "src": "",
     "prompt": "PROMPT_VENUE"
