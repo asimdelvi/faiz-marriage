@@ -2,6 +2,20 @@ import { config } from '../config';
 import { promptText, type PromptKey } from './prompts';
 import type { ImageRef } from '../types';
 
+/**
+ * Prefixes site-root paths with Vite's base URL, so '/images/hero.jpg' keeps
+ * working when the site is served from a subdirectory (GitHub Pages).
+ * Absolute URLs and data URIs pass through untouched.
+ */
+export function asset(path: string | undefined): string {
+  const value = (path ?? '').trim();
+  if (!value) return '';
+  if (/^([a-z]+:)?\/\//i.test(value) || /^(data|blob):/i.test(value)) return value;
+  if (!value.startsWith('/')) return value;
+  const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+  return `${base}${value}`;
+}
+
 export type ResolvedImage = {
   /** Undefined when no real asset exists — render generated artwork instead. */
   src?: string;
@@ -32,7 +46,7 @@ export function resolveImage(
   const prompt = promptText(ref.prompt, fallbackKey);
   const resolvedAlt = ref.alt?.trim() || alt;
 
-  if (ref.src?.trim()) return { src: ref.src.trim(), alt: resolvedAlt, prompt };
+  if (ref.src?.trim()) return { src: asset(ref.src), alt: resolvedAlt, prompt };
 
   const generator = config.imageGenerator?.trim();
   if (generator) {

@@ -25,7 +25,7 @@ export const config: SiteConfig = {
   /* ── Brand ──────────────────────────────────────────────────────────────── */
   hashtag: '',
   logo: '', // optional image; falls back to an engraved monogram
-  siteUrl: '',
+  siteUrl: 'https://asimdelvi.github.io/faiz-marriage',
   locale: 'en_IN',
 
   /* ── Hero media (either is enough; video wins when both are set) ────────── */

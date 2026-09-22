@@ -44,7 +44,10 @@ export function buildMeta(cfg: SiteConfig): Meta {
     ].join('');
 
   const canonical = (cfg.siteUrl ?? '').trim().replace(/\/+$/, '');
-  const ogImage = (cfg.seo?.ogImage || cfg.heroImage || '').trim();
+  const rawOgImage = (cfg.seo?.ogImage || cfg.heroImage || '').trim();
+  // Crawlers need a fully-qualified image URL, not a site-root path.
+  const ogImage =
+    rawOgImage.startsWith('/') && canonical ? `${canonical}${rawOgImage}` : rawOgImage;
 
   const jsonLd: Record<string, unknown> = {
     '@context': 'https://schema.org',

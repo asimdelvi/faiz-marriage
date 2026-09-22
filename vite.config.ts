@@ -2,7 +2,15 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
+/**
+ * GitHub Pages serves this project from https://<user>.github.io/<repo>/, so the
+ * build needs a base path. Override it with BASE_PATH for a custom domain ('/')
+ * or a different repository name.
+ */
+const base = process.env.BASE_PATH || '/faiz-marriage/';
+
 export default defineConfig({
+  base,
   plugins: [react(), tailwindcss()],
   build: {
     target: 'es2020',

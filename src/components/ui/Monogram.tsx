@@ -1,3 +1,5 @@
+import { asset } from '../../lib/media';
+
 type Props = {
   bride: string;
   groom: string;
@@ -16,7 +18,7 @@ export function Monogram({ bride, groom, logo, className = '', size = 'text-base
   if (logo?.trim()) {
     return (
       <img
-        src={logo.trim()}
+        src={asset(logo)}
         alt={`${bride} and ${groom} monogram`}
         className={`h-full w-auto object-contain ${className}`}
         loading="eager"

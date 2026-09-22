@@ -1,2 +1,3 @@
 User-agent: *
 Allow: /
+Sitemap: https://asimdelvi.github.io/faiz-marriage/sitemap.xml

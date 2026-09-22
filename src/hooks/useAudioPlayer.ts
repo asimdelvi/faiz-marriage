@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { asset } from '../lib/media';
 
 const STORAGE_KEY = 'wedding-invite:music';
 const FADE_MS = 1500;
@@ -105,7 +106,7 @@ export function useAudioPlayer(src: string): AudioPlayer {
   // Create the element once and try a *muted* autoplay so playback is warm.
   useEffect(() => {
     if (!available) return;
-    const audio = new Audio(src);
+    const audio = new Audio(asset(src));
     audio.loop = true;
     audio.preload = 'auto';
     audio.muted = true;

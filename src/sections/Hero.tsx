@@ -4,6 +4,7 @@ import SmartImage from '../components/ui/SmartImage';
 import Ornament from '../components/ui/Ornament';
 import Button from '../components/ui/Button';
 import { formatLongDate } from '../lib/format';
+import { asset } from '../lib/media';
 import type { SiteConfig } from '../types';
 
 type Props = {
@@ -51,8 +52,8 @@ export function Hero({ config, bride, groom, rsvpHref, rsvpLabel }: Props) {
         {hasVideo ? (
           <video
             className="h-full w-full object-cover"
-            src={config.heroVideo}
-            poster={config.heroImage || undefined}
+            src={asset(config.heroVideo)}
+            poster={asset(config.heroImage) || undefined}
             autoPlay
             muted
             loop

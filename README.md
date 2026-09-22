@@ -82,11 +82,36 @@ down).
 
 ## Deploying
 
-Static output — `dist/` works on Vercel, Netlify, Cloudflare Pages, GitHub Pages
-or any bucket.
+### GitHub Pages (configured)
+
+`.github/workflows/deploy.yml` builds and publishes on every push to the default
+branch, and can be run by hand from the Actions tab. The site lands at:
+
+**https://asimdelvi.github.io/faiz-marriage/**
+
+One-time setup in the repository settings:
+
+1. **Settings → Pages → Build and deployment → Source: GitHub Actions.**
+   (The workflow also tries to turn this on by itself via `configure-pages`.)
+2. GitHub Pages on a **private** repository needs a paid plan (Pro/Team/
+   Enterprise). On a free account, make the repository public first —
+   Settings → General → Danger Zone → Change visibility.
+
+The build is served from a subdirectory, so `vite.config.ts` sets
+`base: '/faiz-marriage/'` and every site-root path in the config (`/images/…`,
+`/music/…`, the logo, the hero video) is rebased at runtime by `asset()` in
+`src/lib/media.ts`. Nothing else needs to change.
+
+Custom domain? Add the domain in Settings → Pages, put a `CNAME` file in
+`public/`, set `BASE_PATH: /` in the workflow, and update `siteUrl` in the config.
+
+### Anywhere else
+
+The output is plain static files, so `dist/` also works on Vercel, Netlify,
+Cloudflare Pages or any bucket:
 
 ```bash
-npm run build && npx serve dist
+npm run build && npx serve dist        # BASE_PATH=/ for a domain root
 ```
 
 Set `siteUrl` in the config before the production build so the canonical URL and
@@ -105,4 +130,6 @@ src/
   lib/               ← theme, dates, links, meta, prompts, media resolution
 scripts/
   generate-static.mjs← build-time SEO, robots.txt, sitemap.xml
+.github/workflows/
+  deploy.yml         ← build + publish to GitHub Pages
 ```
