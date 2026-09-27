@@ -1,9 +1,14 @@
-# Wedding Invitation
+# Aaliya & Faiz — 3D Wedding Invitation
 
-A premium, mobile-first, single-page wedding invitation — built to be reused for
-any couple by editing **one file**: `src/config.json`.
+A mobile-first invitation that guests *walk through*: every scroll moves the
+camera one arch deeper down a corridor of carved ivory Mughal arches, past
+swaying lanterns and floating gold stars, until it steps out to a domed mosque
+at the end. Built to be reused for any couple by editing **one file**:
+`src/config.json`.
 
-React 19 · TypeScript · Vite · Tailwind CSS v4 · Framer Motion.
+React 19 · TypeScript · Vite · Three.js. No CSS framework, no animation library.
+
+**Live:** https://asimdelvi.github.io/faiz-marriage/
 
 ---
 
@@ -11,130 +16,99 @@ React 19 · TypeScript · Vite · Tailwind CSS v4 · Framer Motion.
 
 ```bash
 npm install
-npm run dev      # http://localhost:5173
+npm run dev      # http://localhost:5173/faiz-marriage/
 npm run build    # bakes SEO, type-checks, builds to dist/
 npm run preview  # serve the production build
 ```
 
-`npm run build` runs `scripts/generate-static.mjs` first, which reads
-`src/config.json` and writes the real `<title>`, meta description, OpenGraph and
-Twitter tags, Schema.org `Event` JSON-LD into `index.html`, plus `public/robots.txt`
-and `public/sitemap.xml`. Crawlers and link previews therefore see the couple's
-details without running any JavaScript.
+## What guests see
+
+1. **Cover** — a sealed card: Bismillah, monogram, names, date and
+   **Open Invitation**. That tap is the gesture that allows the soft background
+   sound to start, and it sets the camera moving into the corridor.
+2. **Bismillah** — a gold crescent spins in above the first arch.
+3. **Blessing** — Surah Ar-Rum 30:21 in Arabic with the English meaning.
+4. **Couple** — the names flip up letter by letter.
+5. **Events** — Nikah and Walima cards with Arabic calligraphy, times and halls.
+6. **Date** — Insha'Allah, the big flip-in date, a live countdown and
+   **Add to calendar**.
+7. **Venue** — address, parking note and **Get directions** (Google Maps).
+8. **RSVP** — the marriage dua, **RSVP on WhatsApp** and tap-to-call contacts.
+9. **Finale** — the camera leaves the last arch and the mosque comes into view.
+
+A glass navigation bar glides the camera straight to any section. On a laptop or
+desktop, the directions and RSVP buttons also show a **QR code**, so guests
+viewing on a big screen can scan it with their phone.
 
 ## Configuring
 
-Everything lives in [`src/config.json`](src/config.json) — plain JSON, no code.
-`src/config.ts` only gives it a type and hands it to the app. Nothing is
-hardcoded in the components, and every field degrades gracefully:
+Everything lives in [`src/config.json`](src/config.json). Placeholders in it
+(names, phone numbers, map link) are marked in its `_readme` notes.
 
 | Field | Notes |
 | --- | --- |
-| `brideName`, `groomName` | Drive the hero, monogram, SEO and RSVP copy. |
-| `weddingDate` | ISO `YYYY-MM-DD`. Powers the countdown, calendar link and JSON-LD. |
-| `weddingTime` | Free text (`'7:00 PM onwards'`). A clock time in it is parsed for the countdown. |
-| `venueName`, `venueAddress`, `googleMapsUrl` | The venue section, the embedded map and "Open directions". A share link, an embed URL or nothing at all (the address is then geocoded by Google) all work. |
-| `hashtag`, `logo`, `socialLinks.instagram` | Branding. No logo → an engraved monogram is drawn from the initials. |
-| `heroImage`, `heroVideo` | Video wins when both are set; it is muted, looping and swapped for the image under `prefers-reduced-motion`. |
-| `backgroundMusic` | Any audio URL. See *Music* below. |
-| `colors` | `primary`, `secondary`, `accent` — pushed into CSS custom properties at runtime, so the whole site (gradients, shadows, generated artwork) follows the palette. |
-| `timeline[]` | The ceremonies. Each card is `{ id, title, date, time, venue, description, image, mapsUrl }`. |
-| `family[]`, `gallery[]`, `story[]` | Arrays; an empty one hides its section *and* its navigation link. |
-| `rsvp` | `type: 'whatsapp' \| 'form' \| 'url' \| 'none'`. WhatsApp takes a phone number in international format; the others take a URL. |
-| `contacts[]` | Tap-to-call numbers in the RSVP section. |
-| `siteUrl`, `seo` | Canonical URL, sitemap and social preview overrides. |
-| `imageGenerator` | Optional text-to-image endpoint for missing artwork — see [ASSET_PROMPTS.md](ASSET_PROMPTS.md). |
+| `brideName`, `groomName` | Cover, monogram, names scene, SEO and RSVP copy. |
+| `weddingDate`, `weddingTime`, `timezone` | ISO date; free-text time whose first clock time (`4:00 PM`) drives the countdown and calendar link; venue offset such as `+05:30` so both are right for guests abroad. |
+| `venueName`, `venueAddress`, `venueNote` | The venue card. |
+| `googleMapsUrl` | Paste the Google Maps **Share** link for an exact pin. Empty → directions search the name and address. |
+| `bismillah`, `bismillahMeaning`, `blessing`, `closingDua` | Arabic and English for the opening, the ayah and the closing dua. |
+| `heroEyebrow`, `heroSubtitle`, `invitationNote`, `dateEyebrow` | Lines around the names and the date. |
+| `timeline[]` | One card per ceremony: `{ id, title, arabic, time, venue, description }`. |
+| `rsvp` | `type: whatsapp \| form \| url \| none`; WhatsApp takes the number with country code, digits only, plus an optional pre-filled `message` and `deadline`. |
+| `contacts[]` | Tap-to-call chips under the RSVP button. |
+| `backgroundMusic` | A file in `public/music/` or a URL; `""` removes the sound button. The bundled `ambient.m4a` is a soft hum with gentle chimes — no instruments. |
+| `colors` | `primary` (text), `secondary` (background), `accent` (gold — the 3D gold follows it too). |
+| `hashtag`, `socialLinks.instagram`, `footerNote` | The finale. |
+| `siteUrl`, `seo` | Canonical URL, sitemap and link preview (`public/og.jpg`). |
 
-Sections with no content simply do not render, and the navigation is built from
-whatever remains — so a minimal config produces a clean, short page rather than
-empty placeholders.
+## How it works
 
-## Missing images
+- `src/three/corridor.ts` builds the whole 3D scene from code — arches, girih
+  patterns, lanterns, crescent, mosque — with no image or model downloads.
+- `src/three/director.ts` runs one animation loop: it turns scroll position into
+  corridor progress (one arch per section), eases the camera so it glides, and
+  writes `--e` / `--l` (entering / leaving) onto each section so CSS can fly the
+  content in from depth and past the viewer.
+- Reveal animations are plain CSS 3D transforms (`.r-flip`, `.r-coin`,
+  `.r-cardL` …, see `src/index.css`), staggered with `--d`.
 
-Any image you do not supply is replaced by deterministic, palette-aware SVG
-artwork (~2 KB, no network requests) and the element carries `data-ai-prompt`
-with the prompt that would produce the real photograph. Prompts and both ways to
-materialise them are documented in [ASSET_PROMPTS.md](ASSET_PROMPTS.md).
+## Performance and accessibility
 
-## Music
-
-- Never autoplays with sound. A *muted* autoplay warms the element up.
-- On first genuine interaction (pointer, key, touch, wheel) the track fades in
-  over 1.5s.
-- On Android a welcome modal asks first — no surprise audio.
-- The floating control toggles playback with the same 1.5s fade.
-- The choice is remembered in `localStorage`; "off" is respected on return.
-
-## Accessibility
-
-Skip link, landmark elements, labelled controls, `aria-current` on the active
-nav link, Escape closes the menu and the modal, visible focus rings, and a full
-`prefers-reduced-motion` path (parallax, hero video, floats and stagger all stand
-down).
-
-## Performance
-
-- The hero is the only above-the-fold work: every section below it is a lazy
-  chunk, and animation features load after first paint via `LazyMotion`.
-- Images are lazy by default, `fetchPriority="high"` for the hero, and every
-  image box reserves its aspect ratio so nothing shifts.
-- Fonts are loaded non-blocking with `display=swap` and a matching system fallback.
-- React is pinned to its own long-lived chunk for cache hits across deploys.
+- Three.js (~130 KB gzipped) loads in its own chunk after the cover paints.
+- Resolution is capped on phones and drops automatically if frames run slow;
+  rendering pauses when the tab is hidden.
+- No WebGL → a drawn gold arch on the ivory backdrop; everything still works.
+- `prefers-reduced-motion` → no camera sway or flying text, content just fades.
+- Fonts are self-hosted (`@fontsource`): Cormorant Garamond, Jost, Great Vibes, Amiri.
+- Real headings and links, `lang="ar"` on Arabic, labelled buttons, visible focus.
+- Sound never autoplays; it starts only after **Open**, fades in, and "off" is remembered.
 
 ## Deploying
 
-### GitHub Pages (configured)
+`.github/workflows/deploy.yml` builds and publishes to GitHub Pages on every
+push to this branch or `main`. One-time setup: **Settings → Pages → Source:
+GitHub Actions** (and the repository must be public on a free plan).
 
-`.github/workflows/deploy.yml` builds and publishes on every push to the default
-branch, and can be run by hand from the Actions tab. The site lands at:
+Custom domain? Add it in Settings → Pages, put a `CNAME` file in `public/`, set
+`BASE_PATH: /` in the workflow, and update `siteUrl` in the config.
 
-**https://asimdelvi.github.io/faiz-marriage/**
-
-One-time setup in the repository settings:
-
-1. **Settings → Pages → Build and deployment → Source: GitHub Actions.**
-   This has to be done by hand once — the workflow token is not permitted to
-   create the Pages site, so the deploy job fails until it is set.
-2. GitHub Pages on a **private** repository needs a paid plan (Pro/Team/
-   Enterprise). On a free account, make the repository public first —
-   Settings → General → Danger Zone → Change visibility.
-3. Re-run the workflow (Actions → Deploy to GitHub Pages → Run workflow), or
-   just push again.
-
-The build is served from a subdirectory, so `vite.config.ts` sets
-`base: '/faiz-marriage/'` and every site-root path in the config (`/images/…`,
-`/music/…`, the logo, the hero video) is rebased at runtime by `asset()` in
-`src/lib/media.ts`. Nothing else needs to change.
-
-Custom domain? Add the domain in Settings → Pages, put a `CNAME` file in
-`public/`, set `BASE_PATH: /` in the workflow, and update `siteUrl` in the config.
-
-### Anywhere else
-
-The output is plain static files, so `dist/` also works on Vercel, Netlify,
-Cloudflare Pages or any bucket:
-
-```bash
-npm run build && npx serve dist        # BASE_PATH=/ for a domain root
-```
-
-Set `siteUrl` in the config before the production build so the canonical URL and
-sitemap are correct.
+The output in `dist/` is static, so Vercel, Netlify or Cloudflare Pages work too
+(`BASE_PATH=/ npm run build`).
 
 ## Project layout
 
 ```
 src/
-  config.json        ← the only file you normally edit
-  config.ts          ← types the JSON and exports it
-  types.ts           ← the shape of the config
-  sections/          ← Hero, Invitation, Story, Timeline, Family, Gallery, Venue, RSVP, Footer
-  components/        ← Navigation, MusicPlayer, WelcomeModal, Countdown
-  components/ui/     ← Section, Reveal, Button, SmartImage, GeneratedArt, Monogram, Ornament
-  hooks/             ← audio, scroll, active section, scroll lock, SEO
-  lib/               ← theme, dates, links, meta, prompts, media resolution
-scripts/
-  generate-static.mjs← build-time SEO, robots.txt, sitemap.xml
-.github/workflows/
-  deploy.yml         ← build + publish to GitHub Pages
+  config.json          ← the only file you normally edit
+  App.tsx              ← cover, scenes, navigation, sound button
+  sections/Scenes.tsx  ← the seven scenes + finale
+  components/          ← Cover, Nav, Countdown, ui (divider, monogram, QR, icons)
+  three/corridor.ts    ← the 3D corridor
+  three/director.ts    ← scroll → camera, section 3D state, adaptive quality
+  hooks/               ← background sound, SEO
+  lib/                 ← dates, links, meta, theme
+public/
+  music/ambient.m4a    ← no-instrument ambient loop
+  og.jpg               ← link preview image
+scripts/generate-static.mjs ← build-time SEO, robots.txt, sitemap.xml
 ```

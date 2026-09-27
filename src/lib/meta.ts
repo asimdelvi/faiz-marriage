@@ -24,7 +24,7 @@ export function coupleNames(cfg: Pick<SiteConfig, 'brideName' | 'groomName'>): {
 export function buildMeta(cfg: SiteConfig): Meta {
   const { pair } = coupleNames(cfg);
   const longDate = formatLongDate(cfg.weddingDate, 'en-IN');
-  const start = parseWeddingDate(cfg.weddingDate, cfg.weddingTime);
+  const start = parseWeddingDate(cfg.weddingDate, cfg.weddingTime, cfg.timezone);
 
   const title =
     cfg.seo?.title?.trim() ||
@@ -36,7 +36,7 @@ export function buildMeta(cfg: SiteConfig): Meta {
   const description =
     cfg.seo?.description?.trim() ||
     [
-      `${pair} invite you to celebrate their wedding`,
+      `${pair} invite you to their Nikah & Walima`,
       longDate ? ` on ${longDate}` : '',
       cfg.venueName ? ` at ${cfg.venueName}` : '',
       cfg.venueAddress ? `, ${cfg.venueAddress}` : '',
@@ -44,7 +44,7 @@ export function buildMeta(cfg: SiteConfig): Meta {
     ].join('');
 
   const canonical = (cfg.siteUrl ?? '').trim().replace(/\/+$/, '');
-  const rawOgImage = (cfg.seo?.ogImage || cfg.heroImage || '').trim();
+  const rawOgImage = (cfg.seo?.ogImage || '').trim();
   // Crawlers need a fully-qualified image URL, not a site-root path.
   const ogImage =
     rawOgImage.startsWith('/') && canonical ? `${canonical}${rawOgImage}` : rawOgImage;

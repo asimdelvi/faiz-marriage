@@ -1,52 +1,20 @@
 /**
- * Content model for the invitation.
- * Every string is optional-by-convention: a missing value must never break a
- * section — it either hides gracefully or falls back to a generated asset.
+ * Content model for the invitation. Every optional field can be left out or
+ * set to "" — the section or line that uses it simply does not render.
  */
-
-export type ImageRef = {
-  /** Real asset URL. When absent, an AI prompt / generated placeholder is used. */
-  src?: string;
-  alt?: string;
-  /** Prompt used to generate this image when `src` is missing. */
-  prompt?: string;
-};
 
 export type TimelineEvent = {
   id: string;
-  /** Mehendi, Sangeet, Haldi, Baraat, Wedding, Reception … */
   title: string;
+  /** Optional calligraphy shown on the card, e.g. "نِكَاح". */
+  arabic?: string;
+  /** Defaults to the wedding date. */
   date?: string;
   time?: string;
   venue?: string;
   description?: string;
-  image?: ImageRef;
   /** Optional per-event map link; falls back to the main venue. */
   mapsUrl?: string;
-};
-
-export type FamilyMember = {
-  id: string;
-  name: string;
-  relation?: string;
-  side?: 'bride' | 'groom' | 'both';
-  note?: string;
-  image?: ImageRef;
-};
-
-export type GalleryItem = ImageRef & {
-  id: string;
-  caption?: string;
-  /** Tall images get a taller cell in the masonry grid. */
-  orientation?: 'portrait' | 'landscape' | 'square';
-};
-
-export type StoryChapter = {
-  id: string;
-  title: string;
-  body: string;
-  date?: string;
-  image?: ImageRef;
 };
 
 export type RsvpConfig = {
@@ -65,61 +33,34 @@ export type SiteConfig = {
 
   brideName: string;
   groomName: string;
-  /** ISO 8601, e.g. "2026-02-14". Drives the countdown + Schema.org Event. */
+  /** ISO 8601, e.g. "2026-12-12". */
   weddingDate: string;
   weddingTime: string;
+  /** Venue UTC offset, e.g. "+05:30". Keeps countdown and calendar correct everywhere. */
+  timezone?: string;
   venueName: string;
   venueAddress: string;
   googleMapsUrl: string;
-  hashtag: string;
-  logo: string;
-  heroImage: string;
-  heroVideo: string;
-  backgroundMusic: string;
-  colors: {
-    primary: string;
-    secondary: string;
-    accent: string;
-  };
-  gallery: GalleryItem[];
-  family: FamilyMember[];
-  timeline: TimelineEvent[];
-  socialLinks: {
-    instagram: string;
-    facebook?: string;
-    youtube?: string;
-  };
-
-  /* ---- optional refinements (safe to leave empty) ---- */
+  venueNote?: string;
+  hashtag?: string;
   siteUrl?: string;
   locale?: string;
-  /** Small line above the names in the hero, e.g. "Together with our families". */
-  heroEyebrow?: string;
-  /** Opening invocation shown above everything, e.g. the Bismillah in Arabic. */
+
   bismillah?: string;
-  /** Transliteration or translation shown under `bismillah`. */
   bismillahMeaning?: string;
-  /** A verse or dua printed in the invitation. */
-  blessing?: { text: string; reference?: string };
-  /** Closing line in the footer. */
-  footerNote?: string;
-  /** Line under the names, e.g. "are getting married". */
+  blessing?: { arabic?: string; text: string; reference?: string };
+  heroEyebrow?: string;
   heroSubtitle?: string;
   invitationNote?: string;
-  story?: StoryChapter[];
+  dateEyebrow?: string;
+  timeline: TimelineEvent[];
+  closingDua?: { arabic?: string; text?: string };
+
   rsvp?: RsvpConfig;
-  venueImage?: ImageRef;
-  venueNote?: string;
-  seo?: {
-    title?: string;
-    description?: string;
-    ogImage?: string;
-  };
   contacts?: { name: string; phone: string; relation?: string }[];
-  /**
-   * Optional text-to-image endpoint used to materialise missing artwork.
-   * `{prompt}` and `{seed}` are substituted. Leave empty to use the built-in
-   * hand-drawn SVG placeholders instead (no network calls).
-   */
-  imageGenerator?: string;
+  socialLinks?: { instagram?: string };
+  backgroundMusic?: string;
+  colors: { primary: string; secondary: string; accent: string };
+  seo?: { title?: string; description?: string; ogImage?: string };
+  footerNote?: string;
 };

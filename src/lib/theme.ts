@@ -37,8 +37,8 @@ export function readableOn(hex: string): string {
 }
 
 /**
- * Pushes the configured palette into CSS custom properties so Tailwind
- * utilities, gradients and shadows all follow the config.
+ * Pushes the configured palette into CSS custom properties so the text,
+ * gradients and shadows all follow the config.
  */
 export function applyTheme(colors: SiteConfig['colors'], root: HTMLElement = document.documentElement) {
   const primary = normaliseHex(colors?.primary, FALLBACK.primary);

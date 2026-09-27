@@ -1,109 +1,86 @@
 {
   "_readme": [
-    "NOTE: every value below is PLACEHOLDER content for preview. Replace it with the real details.",
     "THE ONLY FILE YOU NEED TO EDIT. Fill in the values between the quotes.",
-    "Anything left as \"\" or [] hides itself — an empty family list removes the Family section and its menu link.",
-    "weddingDate must be ISO: \"2026-12-12\". weddingTime is free text: \"After Maghrib\" or \"7:00 PM onwards\" (a clock time in it feeds the countdown).",
-    "googleMapsUrl: paste the Share link from Google Maps. Leave it \"\" and the map finds the venue from its name and address.",
+    "NOTE: names, phone numbers and the map link are placeholders — replace them with the real details.",
+    "weddingDate must be ISO: \"2026-12-12\". weddingTime is free text; the first clock time in it (e.g. 4:00 PM) feeds the countdown, calendar link and search results.",
+    "timezone is the offset of the venue, e.g. \"+05:30\" for India, so the countdown is right for guests anywhere.",
+    "googleMapsUrl: paste the Share link from Google Maps (maps.app.goo.gl/...). Leave it \"\" and directions search for the venue name and address.",
     "rsvp.type is one of: whatsapp | form | url | none. For whatsapp, value is the number with country code and no +, e.g. \"919876543210\".",
-    "Photos go in public/images/ and are referenced as \"/images/name.jpg\". Music goes in public/music/.",
-    "Any image you leave out is replaced by generated gold geometry, so a half-filled file still looks finished.",
-    "colors: primary is the deep tone, secondary the soft background, accent the gold. Change these three and the whole site follows.",
-    "family item: { \"id\": \"brides-parents\", \"name\": \"Mr. & Mrs. Rehman\", \"relation\": \"Parents of the Bride\", \"side\": \"bride\", \"note\": \"\", \"image\": { \"src\": \"/images/family-1.jpg\" } }  —  side is bride | groom | both",
-    "gallery item: { \"id\": \"g1\", \"src\": \"/images/gallery-1.jpg\", \"caption\": \"The first look\", \"orientation\": \"portrait\" }  —  orientation is portrait | landscape | square",
-    "contacts item: { \"name\": \"Imran\", \"phone\": \"+91 98765 43210\", \"relation\": \"Brother of the bride\" }",
-    "Ceremonies: delete any you are not having, reorder them, or add your own — keep each id unique.",
+    "timeline: one card per ceremony. 'arabic' is optional calligraphy shown on the card.",
+    "backgroundMusic: any audio file in public/music/ (\"/music/name.m4a\") or a URL. \"\" hides the music button. Sound only starts after the guest taps Open.",
+    "colors: primary is the text tone, secondary the soft background, accent the gold. The 3D gold follows accent.",
     "This _readme key is ignored by the site — leave it or delete it."
   ],
   "brideName": "Aaliya",
   "groomName": "Faiz",
   "weddingDate": "2026-12-12",
   "weddingTime": "Nikah 4:00 PM · Walima 7:30 PM",
+  "timezone": "+05:30",
   "venueName": "The Grand Pavilion, Palm Gardens",
   "venueAddress": "42 Residency Road, Ashok Nagar, Bengaluru 560025, Karnataka",
-  "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=The%20Grand%20Pavilion%2C%20Palm%20Gardens%2C%2042%20Residency%20Road%2C%20Ashok%20Nagar%2C%20Bengaluru%20560025",
+  "googleMapsUrl": "",
+  "venueNote": "Both the nikah and the walima are at the same venue. Valet parking at Gate 2; please arrive twenty minutes before the nikah.",
   "hashtag": "#AaliyaMeetsFaiz",
-  "logo": "",
   "siteUrl": "https://asimdelvi.github.io/faiz-marriage",
   "locale": "en_IN",
-  "heroImage": "",
-  "heroVideo": "",
+  "bismillah": "بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ",
+  "bismillahMeaning": "In the name of Allah, the Most Gracious, the Most Merciful",
+  "blessing": {
+    "arabic": "وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً",
+    "text": "And among His signs is that He created for you mates from among yourselves, that you may dwell in tranquillity with them, and He has put love and mercy between your hearts.",
+    "reference": "Surah Ar-Rum · 30:21"
+  },
   "heroEyebrow": "Together with our families",
   "heroSubtitle": "request the honour of your presence",
   "invitationNote": "By the grace of Allah, we invite you to join us for our nikah and to stay on for the walima that evening.",
-  "backgroundMusic": "",
-  "colors": {
-    "primary": "#1E5B4F",
-    "secondary": "#E7DCC6",
-    "accent": "#C9A227"
-  },
-  "story": [],
+  "dateEyebrow": "Insha’Allah · Save the date",
   "timeline": [
     {
       "id": "nikah",
       "title": "Nikah",
-      "date": "2026-12-12",
+      "arabic": "نِكَاح",
       "time": "4:00 PM",
       "venue": "The Grand Pavilion, Main Hall",
-      "description": "The nikah nama is signed, the qubool hai is said, and dua is made for the years ahead.",
-      "image": {
-        "src": "",
-        "prompt": "PROMPT_NIKAH"
-      }
+      "description": "The nikah nama is signed, the qubool hai is said, and dua is made for the years ahead."
     },
     {
       "id": "walima",
       "title": "Walima",
-      "date": "2026-12-12",
+      "arabic": "وَلِيمَة",
       "time": "7:30 PM onwards",
       "venue": "The Grand Pavilion, Terrace",
-      "description": "Dinner, duas and the first evening hosted together as husband and wife.",
-      "image": {
-        "src": "",
-        "prompt": "PROMPT_WALIMA"
-      }
+      "description": "Dinner, duas and the first evening hosted together as husband and wife."
     }
   ],
-  "family": [],
-  "gallery": [],
-  "venueImage": {
-    "src": "",
-    "prompt": "PROMPT_VENUE"
+  "closingDua": {
+    "arabic": "بَارَكَ ٱللَّٰهُ لَكُمَا وَبَارَكَ عَلَيْكُمَا وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ",
+    "text": "May Allah bless you both, shower His blessings upon you, and unite you in goodness."
   },
-  "venueNote": "Both the nikah and the walima are at the same venue. Valet parking at Gate 2; please arrive twenty minutes before the nikah.",
   "rsvp": {
     "type": "whatsapp",
     "value": "919876543210",
-    "label": "RSVP",
+    "label": "RSVP on WhatsApp",
     "message": "Assalamu alaikum! We would love to attend Aaliya & Faiz's nikah.",
     "deadline": "2026-11-20",
     "note": "Kindly let us know by the date above so we can plan the seating."
   },
+  "contacts": [
+    { "name": "Imran", "phone": "+91 98765 43210", "relation": "Brother of the bride" },
+    { "name": "Adnan", "phone": "+91 98765 43211", "relation": "Brother of the groom" }
+  ],
   "socialLinks": {
     "instagram": "aaliyameetsfaiz"
   },
-  "contacts": [
-    {
-      "name": "Imran",
-      "phone": "+91 98765 43210",
-      "relation": "Brother of the bride"
-    },
-    {
-      "name": "Adnan",
-      "phone": "+91 98765 43211",
-      "relation": "Brother of the groom"
-    }
-  ],
+  "backgroundMusic": "/music/ambient.m4a",
+  "colors": {
+    "primary": "#4E3727",
+    "secondary": "#EFE3D0",
+    "accent": "#C9A86A"
+  },
   "seo": {
     "title": "",
     "description": "",
-    "ogImage": ""
+    "ogImage": "/og.jpg"
   },
-  "imageGenerator": "",
-  "bismillah": "بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ",
-  "blessing": {
-    "text": "And among His signs is that He created for you mates from among yourselves, that you may dwell in tranquillity with them, and He has put love and mercy between your hearts.",
-    "reference": "Surah Ar-Rum 30:21"
-  },
-  "footerNote": "Your duas and your presence are the greatest blessings we could ask for. Insha'Allah, we will see you there."
+  "footerNote": "Your duas and your presence are the greatest blessings we could ask for. Insha’Allah, we will see you there."
 }

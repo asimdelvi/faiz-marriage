@@ -1,23 +1,32 @@
 /** Date/time helpers. Everything tolerates an empty or malformed config value. */
 
-export function parseWeddingDate(date: string, time?: string): Date | null {
+/**
+ * Parses the wedding date plus the first clock time found in the free-text
+ * time field ("Nikah 4:00 PM · Walima 7:30 PM" → 16:00). With a timezone
+ * offset such as "+05:30" the result is the exact instant at the venue, so the
+ * countdown and calendar link are right for guests in any country.
+ */
+export function parseWeddingDate(date: string, time?: string, timezone?: string): Date | null {
   const raw = (date ?? '').trim();
-  if (!raw) return null;
-  const isoish = /^\d{4}-\d{2}-\d{2}$/.test(raw) ? `${raw}T00:00:00` : raw;
-  const parsed = new Date(isoish);
-  if (Number.isNaN(parsed.getTime())) return null;
-
-  // Best-effort: lift a "7:00 PM"-style time out of the free-text time field.
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+    const loose = raw ? new Date(raw) : null;
+    return loose && !Number.isNaN(loose.getTime()) ? loose : null;
+  }
+  let hours = 0;
+  let minutes = 0;
   const match = (time ?? '').match(/(\d{1,2})[:.](\d{2})\s*(am|pm)?/i);
   if (match) {
-    let hours = Number(match[1]);
-    const minutes = Number(match[2]);
+    hours = Number(match[1]);
+    minutes = Number(match[2]);
     const meridiem = match[3]?.toLowerCase();
     if (meridiem === 'pm' && hours < 12) hours += 12;
     if (meridiem === 'am' && hours === 12) hours = 0;
-    parsed.setHours(hours, minutes, 0, 0);
   }
-  return parsed;
+  const tz = (timezone ?? '').trim();
+  const offset = /^[+-]\d{2}:\d{2}$/.test(tz) ? tz : '';
+  const stamp = `${raw}T${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00${offset}`;
+  const parsed = new Date(stamp);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
 }
 
 export function formatLongDate(date: string, locale = 'en-IN'): string {

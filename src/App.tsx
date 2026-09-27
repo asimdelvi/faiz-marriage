@@ -1,113 +1,138 @@
-import { Suspense, lazy, useEffect, useMemo } from 'react';
-import { AnimatePresence, LazyMotion } from 'framer-motion';
-import Navigation, { type NavItem } from './components/Navigation';
-import MusicPlayer from './components/MusicPlayer';
-import WelcomeModal from './components/WelcomeModal';
-import Hero from './sections/Hero';
-import Invitation from './sections/Invitation';
-import Footer from './sections/Footer';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { config } from './config';
-import { applyTheme } from './lib/theme';
 import { coupleNames } from './lib/meta';
-import { rsvpHref } from './lib/links';
-import { useAudioPlayer } from './hooks/useAudioPlayer';
+import { calendarUrl, directionsUrl, instagramUrl, rsvpHref } from './lib/links';
+import { formatLongDate, parseWeddingDate } from './lib/format';
 import { useSeo } from './hooks/useSeo';
+import { useMusic } from './hooks/useMusic';
+import { startDirector } from './three/director';
+import Cover from './components/Cover';
+import Nav, { type NavItem } from './components/Nav';
+import { Icon } from './components/ui';
+import { Blessing, Couple, DateScene, Events, Finale, Opening, Rsvp, Scene, Venue } from './sections/Scenes';
 
-/* Animation features load in their own chunk, after first paint. */
-const loadMotionFeatures = () => import('framer-motion').then((mod) => mod.domMax);
-
-/* Everything below the fold is code-split — the hero ships alone. */
-const Story = lazy(() => import('./sections/Story'));
-const Timeline = lazy(() => import('./sections/Timeline'));
-const Family = lazy(() => import('./sections/Family'));
-const Gallery = lazy(() => import('./sections/Gallery'));
-const Venue = lazy(() => import('./sections/Venue'));
-const Rsvp = lazy(() => import('./sections/Rsvp'));
-
-/** Reserves vertical space while a chunk loads, so nothing jumps. */
-const Placeholder = () => <div aria-hidden="true" className="min-h-[60vh]" />;
+const INTRO_SECONDS = 2.4;
+const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 export default function App() {
-  const { bride, groom, pair } = coupleNames(config);
-  const music = useAudioPlayer(config.backgroundMusic);
-  const href = rsvpHref(config.rsvp);
-  const rsvpLabel = config.rsvp?.label?.trim() || 'RSVP';
+  const cfg = config;
+  const { bride, groom, pair } = coupleNames(cfg);
+  useSeo(cfg);
 
-  useSeo(config);
+  // Display date: local calendar day, so it reads '12' for guests in any timezone.
+  const date = useMemo(() => parseWeddingDate(cfg.weddingDate), [cfg]);
+  const start = useMemo(() => parseWeddingDate(cfg.weddingDate, cfg.weddingTime, cfg.timezone), [cfg]);
+  const longDate = formatLongDate(cfg.weddingDate, 'en-IN');
+  const directions = directionsUrl(cfg);
+  const rsvp = rsvpHref(cfg.rsvp);
+  const deadlineDate = cfg.rsvp?.deadline ? parseWeddingDate(cfg.rsvp.deadline) : null;
+  const deadline = deadlineDate ? deadlineDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'long' }) : '';
+  const calendarHref = calendarUrl({
+    title: `${pair} — ${cfg.timeline.map((e) => e.title).join(' & ') || 'Wedding'}`,
+    details: [cfg.weddingTime, cfg.invitationNote].filter(Boolean).join('\n'),
+    location: [cfg.venueName, cfg.venueAddress].filter(Boolean).join(', '),
+    start,
+  });
+
+  const scenes = useMemo(
+    () => [
+      { id: 'bismillah', label: 'Bismillah', nav: '' },
+      { id: 'blessing', label: 'Blessing', nav: '' },
+      { id: 'couple', label: 'The couple', nav: 'Couple' },
+      { id: 'events', label: 'Ceremonies', nav: 'Events' },
+      { id: 'date', label: 'Date', nav: 'Date' },
+      { id: 'venue', label: 'Venue', nav: 'Venue' },
+      { id: 'rsvp', label: 'RSVP', nav: 'RSVP' },
+    ],
+    [],
+  );
+  const navItems: NavItem[] = scenes.map((s, index) => ({ index, label: s.nav })).filter((s) => s.label);
+
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const sectionRefs = useRef<(HTMLElement | null)[]>([]);
+  const finaleRef = useRef<HTMLElement>(null);
+  const openedAt = useRef<number | null>(null);
+  const [opened, setOpened] = useState(false);
+  const [coverGone, setCoverGone] = useState(false);
+  const [active, setActive] = useState(0);
+  const [noWebGL, setNoWebGL] = useState(false);
+  const music = useMusic(cfg.backgroundMusic);
+
+  // Scroll is locked behind the cover; always start at the top.
+  useEffect(() => {
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    window.scrollTo(0, 0);
+  }, []);
+  useEffect(() => {
+    document.documentElement.classList.toggle('locked', !opened);
+  }, [opened]);
 
   useEffect(() => {
-    applyTheme(config.colors);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    return startDirector({
+      canvas,
+      sections: sectionRefs.current.filter((s): s is HTMLElement => Boolean(s)),
+      finale: finaleRef.current,
+      gold: cfg.colors.accent,
+      reducedMotion: reducedMotion(),
+      opened: () => (openedAt.current === null ? 0 : Math.min(1, (performance.now() - openedAt.current) / 1000 / INTRO_SECONDS)),
+      onActive: setActive,
+      onNoWebGL: () => setNoWebGL(true),
+    });
+  }, [cfg]);
+
+  const open = useCallback(() => {
+    openedAt.current = performance.now();
+    setOpened(true);
+    music.startIfWanted();
+    window.setTimeout(() => setCoverGone(true), 1300);
+  }, [music]);
+
+  const go = useCallback((index: number) => {
+    sectionRefs.current[index]?.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'center' });
   }, []);
 
-  const story = config.story ?? [];
-  const timeline = config.timeline ?? [];
-  const family = config.family ?? [];
-  const gallery = config.gallery ?? [];
-  const hasVenue = Boolean(
-    config.venueName?.trim() || config.venueAddress?.trim() || config.googleMapsUrl?.trim(),
-  );
-  const hasRsvp = Boolean(href) || Boolean(config.contacts?.length);
-
-  /* The menu only ever lists sections that actually exist. */
-  const navItems = useMemo<NavItem[]>(
-    () =>
-      [
-        { id: 'invitation', label: 'Invitation', show: true },
-        { id: 'story', label: 'Our Story', show: story.length > 0 },
-        { id: 'events', label: 'Events', show: timeline.length > 0 },
-        { id: 'family', label: 'Family', show: family.length > 0 },
-        { id: 'gallery', label: 'Gallery', show: gallery.length > 0 },
-        { id: 'venue', label: 'Venue', show: hasVenue },
-        { id: 'rsvp', label: rsvpLabel, show: hasRsvp },
-      ]
-        .filter((item) => item.show)
-        .map(({ id, label }) => ({ id, label })),
-    [story.length, timeline.length, family.length, gallery.length, hasVenue, hasRsvp, rsvpLabel],
-  );
+  const dateLine = date
+    ? date.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })
+    : '';
 
   return (
-    <LazyMotion features={loadMotionFeatures}>
-      <Navigation
-        items={navItems}
-        bride={bride}
-        groom={groom}
-        logo={config.logo}
-        rsvpHref={href}
-        rsvpLabel={rsvpLabel}
-      />
+    <>
+      <div className={`backdrop${noWebGL ? ' flat' : ''}`} aria-hidden="true">
+        <canvas ref={canvasRef} className="gl" />
+      </div>
+      <div className="scrim" aria-hidden="true" />
 
-      <main id="main">
-        <Hero config={config} bride={bride} groom={groom} rsvpHref={href} rsvpLabel={rsvpLabel} />
-        <Invitation config={config} pair={pair} />
+      <header className={`top${opened ? ' show' : ''}`}>
+        <div className="brand">{pair}</div>
+        {music.available ? (
+          <button type="button" className="sound glass" onClick={music.toggle} aria-pressed={music.playing} aria-label={music.playing ? 'Mute background sound' : 'Play background sound'}>
+            {Icon.sound(music.playing)}
+          </button>
+        ) : null}
+      </header>
 
-        <Suspense fallback={<Placeholder />}>
-          {story.length ? <Story chapters={story} pair={pair} /> : null}
-          {timeline.length ? (
-            <Timeline events={timeline} fallbackMapsUrl={config.googleMapsUrl} />
-          ) : null}
-          {family.length ? <Family members={family} /> : null}
-          {gallery.length ? <Gallery items={gallery} hashtag={config.hashtag} /> : null}
-          {hasVenue ? <Venue config={config} /> : null}
-          {hasRsvp ? <Rsvp config={config} href={href} label={rsvpLabel} pair={pair} /> : null}
-        </Suspense>
+      <main id="main" aria-hidden={!opened}>
+        {scenes.map((s, i) => (
+          <Scene key={s.id} id={s.id} label={s.label} ref={(el) => { sectionRefs.current[i] = el; }}>
+            {s.id === 'bismillah' && <Opening cfg={cfg} />}
+            {s.id === 'blessing' && <Blessing cfg={cfg} />}
+            {s.id === 'couple' && <Couple cfg={cfg} bride={bride} groom={groom} />}
+            {s.id === 'events' && <Events cfg={cfg} longDate={longDate} />}
+            {s.id === 'date' && <DateScene cfg={cfg} date={date} start={start} calendarHref={calendarHref} />}
+            {s.id === 'venue' && <Venue cfg={cfg} directions={directions} />}
+            {s.id === 'rsvp' && <Rsvp cfg={cfg} bride={bride} groom={groom} rsvpHref={rsvp} deadline={deadline} />}
+          </Scene>
+        ))}
+        <Finale ref={finaleRef} cfg={cfg} instagram={instagramUrl(cfg.socialLinks?.instagram ?? '')} />
       </main>
 
-      <Footer config={config} bride={bride} groom={groom} pair={pair} />
+      <Nav items={navItems} active={active} visible={opened} onGo={go} />
 
-      {music.available ? <MusicPlayer playing={music.playing} onToggle={music.toggle} /> : null}
-
-      <AnimatePresence>
-        {music.available && music.needsWelcome ? (
-          <WelcomeModal
-            key="welcome"
-            bride={bride}
-            groom={groom}
-            logo={config.logo}
-            onAccept={music.acceptWelcome}
-            onDecline={music.declineWelcome}
-          />
-        ) : null}
-      </AnimatePresence>
-    </LazyMotion>
+      {!coverGone ? (
+        <Cover bride={bride} groom={groom} bismillah={cfg.bismillah} dateLine={dateLine} hasMusic={music.available} onOpen={open} />
+      ) : null}
+    </>
   );
 }
