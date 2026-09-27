@@ -1,5 +1,5 @@
 /**
- * Prefixes site-root paths with Vite's base URL, so '/music/ambient.m4a' keeps
+ * Prefixes site-root paths with Vite's base URL, so '/music/melody.m4a' keeps
  * working when the site is served from a subdirectory (GitHub Pages).
  * Absolute URLs and data URIs pass through untouched.
  */

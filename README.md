@@ -56,7 +56,7 @@ Everything lives in [`src/config.json`](src/config.json). Placeholders in it
 | `timeline[]` | One card per ceremony: `{ id, title, arabic, time, venue, description }`. |
 | `rsvp` | `type: whatsapp \| form \| url \| none`; WhatsApp takes the number with country code, digits only, plus an optional pre-filled `message` and `deadline`. |
 | `contacts[]` | Tap-to-call chips under the RSVP button. |
-| `backgroundMusic` | A file in `public/music/` or a URL; `""` removes the sound button. The bundled `ambient.m4a` is a soft hum with gentle chimes — no instruments. |
+| `backgroundMusic` | A file in `public/music/` or a URL; `""` removes the sound button. The bundled `melody.m4a` is the invitation video's soundtrack: a warm drone with a plucked melody in the Arabic Hijaz scale and soft bells, looped seamlessly. |
 | `colors` | `primary` (text), `secondary` (background), `accent` (gold — the 3D gold follows it too). |
 | `hashtag`, `socialLinks.instagram`, `footerNote` | The finale. |
 | `siteUrl`, `seo` | Canonical URL, sitemap and link preview (`public/og.jpg`). |
@@ -108,7 +108,7 @@ src/
   hooks/               ← background sound, SEO
   lib/                 ← dates, links, meta, theme
 public/
-  music/ambient.m4a    ← no-instrument ambient loop
+  music/melody.m4a     ← looping soundtrack (Hijaz melody)
   og.jpg               ← link preview image
 scripts/generate-static.mjs ← build-time SEO, robots.txt, sitemap.xml
 ```
