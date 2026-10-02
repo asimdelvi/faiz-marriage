@@ -23,8 +23,9 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html { background: var(--ivory); -webkit-text-size-adjust: 100%; scroll-behavior: auto; overflow-x: hidden; }
-html.locked, html.locked body { overflow: hidden; }
+/* Paged layout: nothing scrolls natively; src/three/director.ts moves one section per gesture. */
+html { background: var(--ivory); -webkit-text-size-adjust: 100%; }
+html, body { height: 100%; overflow: hidden; overscroll-behavior: none; touch-action: none; }
 body { font-family: var(--sans); color: var(--ink); background: transparent; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
 a { color: inherit; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
@@ -105,16 +106,18 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .monogram em { font-family: var(--script); font-style: normal; color: var(--gold); font-size: 1.6rem; margin: 0 2px; }
 
 /* ── scenes ───────────────────────────────────────────────────────────────── */
-main { position: relative; overflow-x: clip; }
-.scene { --e: 1; --l: 0; min-height: 100vh; min-height: 100svh; display: grid; place-items: center;
-  padding: 88px 20px 110px; perspective: 1000px; perspective-origin: 50% 45%; }
+main { position: fixed; inset: 0; overflow: hidden; }
+.scene { --e: 1; --l: 0; --fit: 1; position: absolute; inset: 0; display: grid; place-items: center; visibility: hidden;
+  padding: 76px 20px 96px; perspective: 1000px; perspective-origin: 50% 45%; }
 .panel { width: 100%; max-width: 440px; display: flex; flex-direction: column; align-items: center; text-align: center;
   transform-style: preserve-3d; will-change: transform, opacity;
-  transform: translate3d(0, calc(var(--e) * -16vh + var(--l) * 20vh), calc(var(--e) * -380px + var(--l) * 240px)) rotateX(calc(var(--e) * 14deg - var(--l) * 8deg));
+  transform: translate3d(0, calc(var(--e) * -16vh + var(--l) * 20vh), calc(var(--e) * -380px + var(--l) * 240px)) rotateX(calc(var(--e) * 14deg - var(--l) * 8deg)) scale(var(--fit));
   opacity: calc(1 - var(--e) * 1.3 - var(--l) * 1.5); }
 
 /* reveal system: elements wait in 3D until their scene arrives */
-.r { transition: transform 1.15s var(--ease) var(--d, 0s), opacity .9s ease var(--d, 0s), filter 1s ease var(--d, 0s); }
+/* --pace shortens every stagger so a scene finishes revealing soon after it lands. */
+.r { --t: calc(var(--d, 0s) * var(--pace, .7));
+  transition: transform 1s var(--ease) var(--t), opacity .8s ease var(--t), filter .9s ease var(--t); }
 .scene:not(.in) .r, .cover-card:not(.in) .r { opacity: 0; }
 .scene:not(.in) .r-rise { transform: translate3d(0, 22px, -140px) rotateX(28deg); filter: blur(3px); }
 .scene:not(.in) .r-flip { transform: translateZ(-120px) rotateX(75deg); filter: blur(4px); }
@@ -200,7 +203,8 @@ main { position: relative; overflow-x: clip; }
 .chip small { display: block; font-size: .6rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-soft); }
 
 /* finale · the camera leaves the last arch for the mosque */
-.finale { min-height: 90vh; min-height: 90svh; display: grid; align-items: end; justify-items: center; padding: 0 24px 130px; text-align: center; }
+.finale { --e: 1; --l: 0; --fit: 1; position: absolute; inset: 0; visibility: hidden; display: grid; align-items: end; justify-items: center; padding: 0 24px 130px; text-align: center; }
+.finale .finale-inner { opacity: calc(1 - var(--e) * 1.6); transform: translateY(calc(var(--e) * 8vh)) scale(var(--fit)); will-change: transform, opacity; }
 .finale-inner { max-width: 420px; }
 .finale-note { font-size: 1.3rem; line-height: 1.45; color: var(--ink); }
 .hashtag { font-family: var(--serif); font-weight: 600; font-size: 1.9rem; margin-top: .8rem; }

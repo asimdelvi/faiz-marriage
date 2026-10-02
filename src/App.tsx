@@ -5,7 +5,7 @@ import { calendarUrl, directionsUrl, instagramUrl, rsvpHref } from './lib/links'
 import { formatLongDate, parseWeddingDate } from './lib/format';
 import { useSeo } from './hooks/useSeo';
 import { useMusic } from './hooks/useMusic';
-import { startDirector } from './three/director';
+import { startDirector, type Director } from './three/director';
 import Cover from './components/Cover';
 import Nav, { type NavItem } from './components/Nav';
 import { Icon } from './components/ui';
@@ -59,19 +59,12 @@ export default function App() {
   const [noWebGL, setNoWebGL] = useState(false);
   const music = useMusic(cfg.backgroundMusic);
 
-  // Scroll is locked behind the cover; always start at the top.
-  useEffect(() => {
-    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-    window.scrollTo(0, 0);
-  }, []);
-  useEffect(() => {
-    document.documentElement.classList.toggle('locked', !opened);
-  }, [opened]);
+  const director = useRef<Director | null>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    return startDirector({
+    const d = startDirector({
       canvas,
       sections: sectionRefs.current.filter((s): s is HTMLElement => Boolean(s)),
       finale: finaleRef.current,
@@ -81,6 +74,11 @@ export default function App() {
       onActive: setActive,
       onNoWebGL: () => setNoWebGL(true),
     });
+    director.current = d;
+    return () => {
+      d.stop();
+      director.current = null;
+    };
   }, [cfg]);
 
   const open = useCallback(() => {
@@ -90,9 +88,7 @@ export default function App() {
     window.setTimeout(() => setCoverGone(true), 1300);
   }, [music]);
 
-  const go = useCallback((index: number) => {
-    sectionRefs.current[index]?.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'center' });
-  }, []);
+  const go = useCallback((index: number) => director.current?.goTo(index), []);
 
   const dateLine = date
     ? date.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })

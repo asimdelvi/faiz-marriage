@@ -25,7 +25,7 @@ export function Opening({ cfg }: { cfg: SiteConfig }) {
       <Divider delay={0.8} />
       {cfg.bismillahMeaning ? <p className="kicker measure r r-rise" style={d(0.95)}>{cfg.bismillahMeaning}</p> : null}
       <p className="scroll-hint r r-rise" style={d(1.6)}>
-        <span>Scroll to enter</span>
+        <span>Swipe up to enter</span>
         {Icon.chevron}
       </p>
     </>

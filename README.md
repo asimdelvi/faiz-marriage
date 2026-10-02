@@ -1,6 +1,6 @@
 # Fida & Talha — 3D Nikah Invitation
 
-A mobile-first invitation that guests *walk through*: every scroll moves the
+A mobile-first invitation that guests *walk through*: every swipe moves the
 camera one arch deeper down a corridor of carved ivory Mughal arches, past
 swaying lanterns and floating gold stars, until it steps out to a domed mosque
 at the end. Built to be reused for any couple by editing **one file**:
@@ -67,18 +67,23 @@ Everything lives in [`src/config.json`](src/config.json). Placeholders in it
 
 - `src/three/corridor.ts` builds the whole 3D scene from code — arches, girih
   patterns, lanterns, crescent, mosque — with no image or model downloads.
-- `src/three/director.ts` runs one animation loop: it turns scroll position into
-  corridor progress (one arch per section), eases the camera so it glides, and
-  writes `--e` / `--l` (entering / leaving) onto each section so CSS can fly the
-  content in from depth and past the viewer.
+- **Paged navigation** (`src/three/director.ts`): the page never scrolls
+  natively. Any swipe (30 px+, or a quick flick), wheel/trackpad gesture, arrow
+  key, Page Up/Down, Space or nav tap moves exactly one section. One
+  critically damped spring value drives both the 3D camera and the text
+  (`--e` / `--l` on each section), so they can never drift apart, and every
+  section lands centred between the top bar and the nav. Panels taller than
+  the screen are scaled to fit (`--fit`). A section's reveal starts once the
+  glide has landed.
 - Reveal animations are plain CSS 3D transforms (`.r-flip`, `.r-coin`,
   `.r-cardL` …, see `src/index.css`), staggered with `--d`.
 
 ## Performance and accessibility
 
 - Three.js (~130 KB gzipped) loads in its own chunk after the cover paints.
-- Resolution is capped on phones and drops automatically if frames run slow;
-  rendering pauses when the tab is hidden.
+- Resolution is fixed per device (1.5× on phones, 1.75× on desktops), so it
+  never changes mid-visit; when nothing is moving the 3D view renders at about
+  30 fps, and rendering pauses when the tab is hidden.
 - No WebGL → a drawn gold arch on the ivory backdrop; everything still works.
 - `prefers-reduced-motion` → no camera sway or flying text, content just fades.
 - Fonts are self-hosted (`@fontsource`): Cormorant Garamond, Jost, Great Vibes, Amiri.
@@ -106,7 +111,7 @@ src/
   sections/Scenes.tsx  ← the seven scenes + finale
   components/          ← Cover, Nav, Countdown, ui (divider, monogram, QR, icons)
   three/corridor.ts    ← the 3D corridor
-  three/director.ts    ← scroll → camera, section 3D state, adaptive quality
+  three/director.ts    ← paged input → one spring → camera + section 3D state
   hooks/               ← background sound, SEO
   lib/                 ← dates, links, meta, theme
 public/

@@ -1,19 +1,27 @@
 /**
- * One animation loop for the whole page. Each frame it:
- *  - turns the scroll position into corridor progress (one arch per section),
- *    eased so the camera glides rather than jitters under the finger;
- *  - writes --e / --l (entering / leaving, 0…1) onto every section so CSS can
- *    fly the content in from depth and past the viewer;
- *  - marks sections as revealed and reports which one is active;
- *  - renders the 3D corridor, lowering resolution on slow devices.
- * The Three.js code is loaded lazily so the cover paints immediately.
+ * Paged navigation + one animation loop for the whole page.
+ *
+ * The page never scrolls natively. Every swipe, wheel gesture or key press
+ * moves exactly one section, and a single spring-driven value `pos`
+ * (0 = first section … N-1 = last, N = the finale at the mosque) drives BOTH
+ * the 3D camera and the text layer, so they can never drift apart.
+ *
+ * Each frame (only while something moves):
+ *  - steps the spring towards the target page;
+ *  - writes --e / --l (entering / leaving, 0…1) and --fit on each section so
+ *    CSS can fly the content in from depth, centred and scaled to fit;
+ *  - adds `in` to a section once the glide has landed on it (reveals start
+ *    on a still panel, not mid-flight);
+ *  - renders the 3D corridor. When idle it renders at ~30 fps for the
+ *    ambient lantern sway and dust.
+ * Three.js is loaded lazily so the cover paints immediately.
  */
 import type { Corridor } from './corridor';
 
 type Options = {
   canvas: HTMLCanvasElement;
   sections: HTMLElement[];
-  /** Trailing element after the last section; scrolling into it flies to the mosque. */
+  /** The finale layer, shown as one extra page after the last section. */
   finale: HTMLElement | null;
   gold: string;
   reducedMotion: boolean;
@@ -23,20 +31,39 @@ type Options = {
   onNoWebGL: () => void;
 };
 
-const clamp = (x: number, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+export type Director = {
+  /** Glide to a page (0-based; N = finale). */
+  goTo: (index: number) => void;
+  stop: () => void;
+};
 
-export function startDirector(o: Options): () => void {
+const clamp = (x: number, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+/** Spring stiffness: settles in about 0.9 s, no overshoot (critically damped). */
+const OMEGA = 6.5;
+/** Space reserved for the top bar and the bottom navigation. */
+const SAFE_TOP = 76;
+const SAFE_BOTTOM = 96;
+
+export function startDirector(o: Options): Director {
   let corridor: Corridor | null = null;
   let raf = 0;
   let stopped = false;
-  let cam = 0;
   let last = performance.now();
-  let active = -1;
+  let lastRender = 0;
   const t0 = last;
 
+  const pages = [...o.sections, ...(o.finale ? [o.finale] : [])];
+  const lastPage = pages.length - 1;
+  let target = 0;
+  let pos = 0;
+  let vel = 0;
+  let reported = -1;
+  let dirty = true;
+  let fits: number[] = pages.map(() => 1);
+
+  // Fixed resolution chosen once (no mid-session resolution pops).
   const lowPower = window.matchMedia('(max-width: 820px)').matches || (navigator.hardwareConcurrency ?? 8) <= 4;
-  let ratio = Math.min(window.devicePixelRatio || 1, lowPower ? 1.5 : 1.75);
-  const frameTimes: number[] = [];
+  const ratio = Math.min(window.devicePixelRatio || 1, lowPower ? 1.5 : 1.75);
 
   import('./corridor')
     .then(({ createCorridor }) => {
@@ -52,72 +79,193 @@ export function startDirector(o: Options): () => void {
     })
     .catch(() => o.onNoWebGL());
 
-  const onResize = () => corridor?.resize(window.innerWidth, window.innerHeight);
+  /** Scale each panel down if it is taller than the space between the bars. */
+  function measure() {
+    const avail = window.innerHeight - SAFE_TOP - SAFE_BOTTOM;
+    fits = pages.map((page) => {
+      const panel = page.querySelector<HTMLElement>('.panel, .finale-inner');
+      const h = panel?.offsetHeight ?? 0; // layout height, unaffected by transforms
+      return h > avail ? Math.max(0.6, avail / h) : 1;
+    });
+    dirty = true;
+  }
+  measure();
+  void document.fonts?.ready.then(measure);
+
+  const onResize = () => {
+    corridor?.resize(window.innerWidth, window.innerHeight);
+    measure();
+  };
   window.addEventListener('resize', onResize);
 
-  /** Scroll position → progress: section i at rest = i; the finale adds up to 1. */
-  function targetProgress(vh: number) {
-    const y = window.scrollY;
-    const tops = o.sections.map((s) => s.offsetTop + Math.max(0, s.offsetHeight - vh) / 2);
-    const lastIdx = tops.length - 1;
-    for (let i = 0; i < lastIdx; i++) {
-      if (y < tops[i + 1]) return i + clamp((y - tops[i]) / (tops[i + 1] - tops[i]), -1, 1);
+  function goTo(index: number) {
+    const next = Math.round(clamp(index, 0, lastPage));
+    if (next === target) return;
+    target = next;
+    dirty = true;
+    const active = Math.min(target, o.sections.length - 1);
+    if (active !== reported) {
+      reported = active;
+      o.onActive(active);
     }
-    const maxScroll = document.documentElement.scrollHeight - vh;
-    const span = Math.max(1, maxScroll - tops[lastIdx]);
-    return lastIdx + (o.finale ? clamp((y - tops[lastIdx]) / span) : 0);
+  }
+  const step = (dir: number) => goTo(target + dir);
+  const enabled = () => o.opened() > 0;
+
+  /* ── input: one gesture = one page ─────────────────────────────────────── */
+  // Wheel / trackpad: one step per gesture. A gesture ends after a 180 ms
+  // pause in wheel events, which also swallows trackpad inertia.
+  let acc = 0;
+  let locked = false;
+  let lastWheel = 0;
+  let lastStep = 0;
+  const onWheel = (e: WheelEvent) => {
+    e.preventDefault();
+    if (!enabled()) return;
+    const now = performance.now();
+    if (now - lastWheel > 180) {
+      locked = false;
+      acc = 0;
+    }
+    lastWheel = now;
+    if (locked || now - lastStep < 450) return;
+    acc += e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY;
+    if (Math.abs(acc) >= 24) {
+      step(Math.sign(acc));
+      locked = true;
+      lastStep = now;
+      acc = 0;
+    }
+  };
+
+  // Touch: a swipe of 30 px+ (or a quick flick of 12 px+) moves one page; taps don't.
+  let startY = 0;
+  let startX = 0;
+  let lastY = 0;
+  let lastX = 0;
+  let startT = 0;
+  let tracking = false;
+  const onTouchStart = (e: TouchEvent) => {
+    if (e.touches.length !== 1) return;
+    tracking = true;
+    startY = lastY = e.touches[0].clientY;
+    startX = lastX = e.touches[0].clientX;
+    startT = performance.now();
+  };
+  const onTouchMove = (e: TouchEvent) => {
+    // No native scrolling, rubber-banding or pull-to-refresh.
+    if (e.cancelable) e.preventDefault();
+    if (e.touches.length === 1) {
+      lastY = e.touches[0].clientY;
+      lastX = e.touches[0].clientX;
+    }
+  };
+  const onTouchEnd = (e: TouchEvent) => {
+    if (!tracking || !enabled()) return;
+    tracking = false;
+    // Use the last tracked point: some browsers report touchend at the start point.
+    const t = e.changedTouches[0];
+    const endY = t && t.clientY !== startY ? t.clientY : lastY;
+    const endX = t && t.clientX !== startX ? t.clientX : lastX;
+    const dy = startY - endY;
+    const dx = startX - endX;
+    const fast = Math.abs(dy) / Math.max(1, performance.now() - startT) > 0.15;
+    if (Math.abs(dy) < Math.abs(dx)) return;
+    if (Math.abs(dy) >= 30 || (fast && Math.abs(dy) >= 12)) step(Math.sign(dy));
+  };
+
+  // Keyboard.
+  const onKey = (e: KeyboardEvent) => {
+    if (!enabled() || e.altKey || e.ctrlKey || e.metaKey) return;
+    const el = e.target as HTMLElement | null;
+    const onControl = !!el?.closest('button, a, input, textarea, select');
+    let dir = 0;
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || (e.key === ' ' && !onControl && !e.shiftKey)) dir = 1;
+    else if (e.key === 'ArrowUp' || e.key === 'PageUp' || (e.key === ' ' && !onControl && e.shiftKey)) dir = -1;
+    else if (e.key === 'Home') return e.preventDefault(), goTo(0);
+    else if (e.key === 'End') return e.preventDefault(), goTo(lastPage);
+    if (!dir) return;
+    e.preventDefault();
+    step(dir);
+  };
+
+  window.addEventListener('wheel', onWheel, { passive: false });
+  window.addEventListener('touchstart', onTouchStart, { passive: true });
+  window.addEventListener('touchmove', onTouchMove, { passive: false });
+  window.addEventListener('touchend', onTouchEnd, { passive: true });
+  window.addEventListener('keydown', onKey);
+
+  /* ── frame loop ────────────────────────────────────────────────────────── */
+  const shown: boolean[] = pages.map(() => false);
+
+  function writeSections() {
+    pages.forEach((el, i) => {
+      const q = i - pos; // +1 = one page ahead, -1 = one page behind
+      const visible = Math.abs(q) < 1.02;
+      if (visible !== shown[i]) {
+        shown[i] = visible;
+        el.style.visibility = visible ? 'visible' : 'hidden';
+      }
+      if (visible) {
+        el.style.setProperty('--e', clamp(q).toFixed(4));
+        el.style.setProperty('--l', clamp(-q).toFixed(4));
+        el.style.setProperty('--fit', fits[i].toFixed(4));
+      }
+      const current = i === target;
+      el.toggleAttribute('inert', !current);
+      // Reveal once the glide has (almost) landed here.
+      if (current && Math.abs(pos - i) < 0.08 && enabled()) el.classList.add('in');
+    });
   }
 
   function frame(now: number) {
     raf = requestAnimationFrame(frame);
     if (document.hidden) return;
-    const dt = Math.min(0.1, (now - last) / 1000);
+    const dt = Math.min(0.05, (now - last) / 1000);
     last = now;
-    const vh = window.innerHeight;
 
-    // sections: entering / leaving amounts, reveal, active
-    let best = Infinity;
-    let bestIdx = 0;
-    o.sections.forEach((el, i) => {
-      const r = el.getBoundingClientRect();
-      const q = (r.top + r.height / 2 - vh / 2) / vh;
-      el.style.setProperty('--e', clamp(q).toFixed(3));
-      el.style.setProperty('--l', clamp(-q).toFixed(3));
-      if (q < 0.45 && q > -0.9 && o.opened() > 0) el.classList.add('in');
-      if (Math.abs(q) < best) {
-        best = Math.abs(q);
-        bestIdx = i;
+    // Critically damped spring: smooth start, no overshoot, retargets cleanly.
+    if (o.reducedMotion) {
+      pos = target;
+      vel = 0;
+    } else {
+      const acc = OMEGA * OMEGA * (target - pos) - 2 * OMEGA * vel;
+      vel += acc * dt;
+      pos += vel * dt;
+      if (Math.abs(target - pos) < 0.0005 && Math.abs(vel) < 0.0005) {
+        pos = target;
+        vel = 0;
       }
-    });
-    if (bestIdx !== active) {
-      active = bestIdx;
-      o.onActive(bestIdx);
+    }
+    const moving = pos !== target || vel !== 0;
+    const intro = o.opened();
+    if (moving || dirty || (intro > 0 && intro < 1)) {
+      writeSections();
+      dirty = moving || (intro > 0 && intro < 1);
     }
 
     if (!corridor) return;
-    const target = targetProgress(vh);
-    cam = o.reducedMotion ? target : cam + (target - cam) * (1 - Math.exp(-dt * 5.5));
-    corridor.render(cam, (now - t0) / 1000, o.opened());
-
-    // adaptive resolution: if frames are slow, render fewer pixels
-    frameTimes.push(dt);
-    if (frameTimes.length === 90) {
-      const sorted = [...frameTimes].sort((a, b) => a - b);
-      const median = sorted[45];
-      frameTimes.length = 0;
-      if (median > 1 / 42 && ratio > 1) {
-        ratio = Math.max(1, ratio - 0.25);
-        corridor.setPixelRatio(ratio);
-        corridor.resize(window.innerWidth, window.innerHeight);
-      }
-    }
+    // Idle: ~30 fps is plenty for swaying lanterns and drifting dust.
+    if (!moving && intro >= 1 && now - lastRender < 32) return;
+    lastRender = now;
+    corridor.render(pos, (now - t0) / 1000, intro);
   }
   raf = requestAnimationFrame(frame);
+  o.onActive(0);
+  reported = 0;
 
-  return () => {
-    stopped = true;
-    cancelAnimationFrame(raf);
-    window.removeEventListener('resize', onResize);
-    corridor?.dispose();
+  return {
+    goTo,
+    stop: () => {
+      stopped = true;
+      cancelAnimationFrame(raf);
+      window.removeEventListener('resize', onResize);
+      window.removeEventListener('wheel', onWheel);
+      window.removeEventListener('touchstart', onTouchStart);
+      window.removeEventListener('touchmove', onTouchMove);
+      window.removeEventListener('touchend', onTouchEnd);
+      window.removeEventListener('keydown', onKey);
+      corridor?.dispose();
+    },
   };
 }
