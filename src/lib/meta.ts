@@ -10,25 +10,31 @@ export type Meta = {
   jsonLd: Record<string, unknown>;
 };
 
-export function coupleNames(cfg: Pick<SiteConfig, 'brideName' | 'groomName'>): {
+export function coupleNames(cfg: Pick<SiteConfig, 'brideName' | 'groomName' | 'shortNames'>): {
   bride: string;
   groom: string;
   pair: string;
+  shortBride: string;
+  shortGroom: string;
+  shortPair: string;
 } {
   const bride = (cfg.brideName ?? '').trim() || 'The Bride';
   const groom = (cfg.groomName ?? '').trim() || 'The Groom';
-  return { bride, groom, pair: `${bride} & ${groom}` };
+  const shortBride = cfg.shortNames?.bride?.trim() || bride;
+  const shortGroom = cfg.shortNames?.groom?.trim() || groom;
+  return { bride, groom, pair: `${bride} & ${groom}`, shortBride, shortGroom, shortPair: `${shortBride} & ${shortGroom}` };
 }
 
 /** Single source of truth for SEO — used at build time and at runtime. */
 export function buildMeta(cfg: SiteConfig): Meta {
-  const { pair } = coupleNames(cfg);
+  const { pair, shortPair } = coupleNames(cfg);
+  const events = (cfg.timeline ?? []).map((e) => e.title).filter(Boolean).join(' & ') || 'wedding';
   const longDate = formatLongDate(cfg.weddingDate, 'en-IN');
   const start = parseWeddingDate(cfg.weddingDate, cfg.weddingTime, cfg.timezone);
 
   const title =
     cfg.seo?.title?.trim() ||
-    [pair, longDate ? `· ${longDate}` : '', '· Wedding Invitation']
+    [shortPair, longDate ? `· ${longDate}` : '', `· ${events} Invitation`]
       .filter(Boolean)
       .join(' ')
       .replace(/\s+/g, ' ');
@@ -36,7 +42,7 @@ export function buildMeta(cfg: SiteConfig): Meta {
   const description =
     cfg.seo?.description?.trim() ||
     [
-      `${pair} invite you to their Nikah & Walima`,
+      `${pair} invite you to their ${events}`,
       longDate ? ` on ${longDate}` : '',
       cfg.venueName ? ` at ${cfg.venueName}` : '',
       cfg.venueAddress ? `, ${cfg.venueAddress}` : '',
@@ -52,7 +58,7 @@ export function buildMeta(cfg: SiteConfig): Meta {
   const jsonLd: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': 'Event',
-    name: `${pair} — Wedding`,
+    name: `${shortPair} — ${events}`,
     eventStatus: 'https://schema.org/EventScheduled',
     eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
     description,

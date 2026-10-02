@@ -47,36 +47,45 @@ export function Blessing({ cfg }: { cfg: SiteConfig }) {
 }
 
 export function Couple({ cfg, bride, groom }: { cfg: SiteConfig; bride: string; groom: string }) {
-  const second = 0.9 + bride.length * 0.07;
+  // Long names spell out faster so the whole reveal stays under about 3 seconds.
+  const step = Math.min(0.07, 1.4 / Math.max(bride.length, groom.length, 1));
+  const amp = 0.55 + bride.length * step;
+  const second = amp + 0.45;
+  const end = second + groom.length * step;
   return (
     <>
       {cfg.heroEyebrow ? <p className="kicker r r-rise" style={d(0.1)}>{cfg.heroEyebrow}</p> : null}
-      <h1 className="names emboss">
-        <Letters text={bride} start={0.35} />
-        <span className="amp r r-coin" style={d(0.55 + bride.length * 0.07)} aria-hidden="true">&amp;</span>
+      <h1 className={`names emboss${Math.max(bride.length, groom.length) > 12 ? ' long' : ''}`}>
+        <Letters text={bride} start={0.35} step={step} />
+        {cfg.brideParent ? <span className="parent r r-rise" style={d(amp - 0.1)}>{cfg.brideParent}</span> : null}
+        <span className="amp r r-coin" style={d(amp)} aria-hidden="true">&amp;</span>
         <span className="sr-only"> and </span>
-        <Letters text={groom} start={second} />
+        {cfg.groomTitle ? <span className="honorific r r-rise" style={d(second - 0.15)}>{cfg.groomTitle} </span> : null}
+        <Letters text={groom} start={second} step={step} />
+        {cfg.groomParent ? <span className="parent r r-rise" style={d(end)}>{cfg.groomParent}</span> : null}
       </h1>
-      <Divider delay={second + 0.5} />
-      {cfg.heroSubtitle ? <p className="italic lead r r-rise" style={d(second + 0.6)}>{cfg.heroSubtitle}</p> : null}
-      {cfg.invitationNote ? <p className="body-text measure r r-rise" style={d(second + 0.8)}>{cfg.invitationNote}</p> : null}
+      <Divider delay={end + 0.3} />
+      {cfg.heroSubtitle ? <p className="italic lead r r-rise" style={d(end + 0.4)}>{cfg.heroSubtitle}</p> : null}
+      {cfg.invitationNote ? <p className="body-text measure r r-rise" style={d(end + 0.6)}>{cfg.invitationNote}</p> : null}
     </>
   );
 }
 
 export function Events({ cfg, longDate }: { cfg: SiteConfig; longDate: string }) {
   const titles = cfg.timeline.map((e) => e.title).filter(Boolean);
-  const heading = titles.length === 2 ? titles : null;
+  const custom = cfg.eventsHeading?.trim();
   return (
     <>
       <p className="kicker r r-rise" style={d(0.1)}>You are invited to the</p>
       <h2 className="heading emboss r r-flip" style={d(0.25)}>
-        {heading ? (
+        {custom ? (
+          custom
+        ) : titles.length === 2 ? (
           <>
-            {heading[0]} <span className="script">&amp;</span> {heading[1]}
+            {titles[0]} <span className="script">&amp;</span> {titles[1]}
           </>
         ) : (
-          'The Celebrations'
+          titles[0] || 'The Celebrations'
         )}
       </h2>
       {longDate ? <p className="italic sub r r-rise" style={d(0.45)}>{longDate}</p> : null}
@@ -164,20 +173,24 @@ export function Venue({ cfg, directions }: { cfg: SiteConfig; directions: string
   );
 }
 
-export function Rsvp({ cfg, bride, groom, rsvpHref, deadline }: {
+export function Rsvp({ cfg, bride, groom, rsvpHref, deadline, signOff }: {
   cfg: SiteConfig;
   bride: string;
   groom: string;
   rsvpHref: string;
   deadline: string;
+  /** Shown when there is no RSVP, e.g. "Fida & Talha · 28 January 2027". */
+  signOff: string;
 }) {
   const label = cfg.rsvp?.label?.trim() || 'RSVP';
+  const closingOnly = !rsvpHref && !cfg.contacts?.length;
   return (
     <>
       <Monogram a={bride} b={groom} delay={0.1} />
       {cfg.closingDua?.arabic ? <Arabic className="dua" variant="r-flip" delay={0.35}>{cfg.closingDua.arabic}</Arabic> : null}
       {cfg.closingDua?.text ? <p className="italic sub measure r r-rise" style={d(0.6)}>{cfg.closingDua.text}</p> : null}
       <Divider delay={0.8} />
+      {closingOnly && signOff ? <p className="kicker r r-rise" style={d(0.95)}>{signOff}</p> : null}
       {deadline ? <p className="kicker r r-rise" style={d(0.9)}>Kindly reply by {deadline}</p> : null}
       {cfg.rsvp?.note ? <p className="body-text measure r r-rise" style={d(1)}>{cfg.rsvp.note}</p> : null}
       {rsvpHref ? (

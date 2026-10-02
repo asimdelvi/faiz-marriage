@@ -145,7 +145,11 @@ main { position: relative; overflow-x: clip; }
 /* scene 3 · couple */
 .names { font-family: var(--serif); font-weight: 600; font-size: clamp(3.6rem, 18vw, 5.4rem); line-height: .98; color: var(--ink);
   display: flex; flex-direction: column; align-items: center; margin-top: 1.1rem; perspective: 600px; }
-.letters { display: block; white-space: nowrap; }
+.letters { display: block; }
+.letters .word { display: inline-block; white-space: nowrap; margin: 0 .12em; }
+.names.long { font-size: clamp(2.5rem, 11.5vw, 3.9rem); line-height: 1.02; }
+.names .parent { display: block; margin: .45rem 0 .1rem; font-family: var(--sans); font-weight: 450; font-size: .68rem; letter-spacing: .26em; text-transform: uppercase; color: var(--ink-soft); text-shadow: none; }
+.names .honorific { display: block; margin-bottom: .1rem; font-family: var(--serif); font-style: italic; font-weight: 500; font-size: 1.45rem; line-height: 1.2; color: var(--gold-deep); text-shadow: none; }
 .amp { display: block; font-family: var(--script); font-weight: 400; font-size: .82em; color: var(--gold); line-height: 1; margin: 2px 0 -4px;
   text-shadow: 0 2px 0 #b08d55, 0 10px 14px rgb(80 55 30 / .25); }
 
@@ -234,7 +238,10 @@ main { position: relative; overflow-x: clip; }
 @keyframes coin { from { opacity: 0; transform: rotateY(540deg) scale(.55); } }
 .cover-bismillah { font-size: 1.5rem; margin-bottom: .4rem; }
 .cover-mono { margin: .3rem 0 .6rem; }
-.cover-names { font-family: var(--serif); font-weight: 600; font-size: 2.6rem; line-height: 1.1; color: var(--ink); }
+.cover-names { font-family: var(--serif); font-weight: 600; font-size: 2.6rem; line-height: 1.1; color: var(--ink); display: flex; flex-direction: column; align-items: center; }
+.cover-names .cover-name { display: block; font-size: clamp(1.7rem, 7.4vw, 2.1rem); line-height: 1.12; }
+.cover-names small { display: block; font-style: italic; font-weight: 500; font-size: .62em; color: var(--gold-deep); }
+.cover-amp { font-size: 1.9rem; line-height: 1.1; }
 .cover-names .script { font-size: .85em; }
 .cover-date { margin-top: .2rem; }
 .cover-btn { margin-top: 1.2rem; }

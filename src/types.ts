@@ -32,7 +32,14 @@ export type SiteConfig = {
   _readme?: string[];
 
   brideName: string;
+  /** e.g. "D/o Mohammed Ilyas", shown under the bride's name. */
+  brideParent?: string;
+  /** Honorific shown above the groom's name, e.g. "Mufti". */
+  groomTitle?: string;
   groomName: string;
+  groomParent?: string;
+  /** Short forms for tight spaces: top bar, monogram initials. */
+  shortNames?: { bride?: string; groom?: string };
   /** ISO 8601, e.g. "2026-12-12". */
   weddingDate: string;
   weddingTime: string;
@@ -53,6 +60,8 @@ export type SiteConfig = {
   heroSubtitle?: string;
   invitationNote?: string;
   dateEyebrow?: string;
+  /** Heading of the ceremonies scene; defaults to the event titles. */
+  eventsHeading?: string;
   timeline: TimelineEvent[];
   closingDua?: { arabic?: string; text?: string };
 

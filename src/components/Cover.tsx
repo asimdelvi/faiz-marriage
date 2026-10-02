@@ -4,6 +4,10 @@ import { d, Monogram } from './ui';
 type Props = {
   bride: string;
   groom: string;
+  /** Honorific before the groom's name, e.g. "Mufti". */
+  groomTitle?: string;
+  /** Initials for the monogram, from the short names. */
+  initials: [string, string];
   bismillah?: string;
   dateLine: string;
   hasMusic: boolean;
@@ -14,7 +18,7 @@ type Props = {
  * The sealed invitation. Tapping Open is the guest's first gesture, which is
  * what lets the soft background sound start — and it sets the camera moving.
  */
-export default function Cover({ bride, groom, bismillah, dateLine, hasMusic, onOpen }: Props) {
+export default function Cover({ bride, groom, groomTitle, initials, bismillah, dateLine, hasMusic, onOpen }: Props) {
   const [leaving, setLeaving] = useState(false);
   return (
     <div className={`cover${leaving ? ' leaving' : ''}`} role="dialog" aria-modal="true" aria-labelledby="cover-names">
@@ -24,10 +28,15 @@ export default function Cover({ bride, groom, bismillah, dateLine, hasMusic, onO
             {bismillah}
           </p>
         ) : null}
-        <Monogram a={bride} b={groom} className="cover-mono" delay={0.25} />
+        <Monogram a={initials[0]} b={initials[1]} className="cover-mono" delay={0.25} />
         <p className="kicker r r-rise" style={d(0.45)}>The Nikah of</p>
         <h2 id="cover-names" className="cover-names r r-flip" style={d(0.55)}>
-          {bride} <span className="script">&amp;</span> {groom}
+          <span className="cover-name">{bride}</span>
+          <span className="script cover-amp">&amp;</span>
+          <span className="cover-name">
+            {groomTitle ? <small>{groomTitle} </small> : null}
+            {groom}
+          </span>
         </h2>
         <p className="kicker cover-date r r-rise" style={d(0.7)}>{dateLine}</p>
         <button

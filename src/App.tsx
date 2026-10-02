@@ -16,7 +16,7 @@ const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)'
 
 export default function App() {
   const cfg = config;
-  const { bride, groom, pair } = coupleNames(cfg);
+  const { bride, groom, pair, shortBride, shortGroom, shortPair } = coupleNames(cfg);
   useSeo(cfg);
 
   // Display date: local calendar day, so it reads '12' for guests in any timezone.
@@ -42,9 +42,10 @@ export default function App() {
       { id: 'events', label: 'Ceremonies', nav: 'Events' },
       { id: 'date', label: 'Date', nav: 'Date' },
       { id: 'venue', label: 'Venue', nav: 'Venue' },
-      { id: 'rsvp', label: 'RSVP', nav: 'RSVP' },
+      // Without an RSVP link or contacts, the last scene is the closing dua.
+      rsvp || cfg.contacts?.length ? { id: 'rsvp', label: 'RSVP', nav: 'RSVP' } : { id: 'rsvp', label: 'Closing dua', nav: 'Dua' },
     ],
-    [],
+    [rsvp, cfg],
   );
   const navItems: NavItem[] = scenes.map((s, index) => ({ index, label: s.nav })).filter((s) => s.label);
 
@@ -105,7 +106,7 @@ export default function App() {
       <div className="scrim" aria-hidden="true" />
 
       <header className={`top${opened ? ' show' : ''}`}>
-        <div className="brand">{pair}</div>
+        <div className="brand">{shortPair}</div>
         {music.available ? (
           <button type="button" className="sound glass" onClick={music.toggle} aria-pressed={music.playing} aria-label={music.playing ? 'Mute background sound' : 'Play background sound'}>
             {Icon.sound(music.playing)}
@@ -122,7 +123,7 @@ export default function App() {
             {s.id === 'events' && <Events cfg={cfg} longDate={longDate} />}
             {s.id === 'date' && <DateScene cfg={cfg} date={date} start={start} calendarHref={calendarHref} />}
             {s.id === 'venue' && <Venue cfg={cfg} directions={directions} />}
-            {s.id === 'rsvp' && <Rsvp cfg={cfg} bride={bride} groom={groom} rsvpHref={rsvp} deadline={deadline} />}
+            {s.id === 'rsvp' && <Rsvp cfg={cfg} bride={shortBride} groom={shortGroom} rsvpHref={rsvp} deadline={deadline} signOff={[shortPair, dateLine].filter(Boolean).join(' · ')} />}
           </Scene>
         ))}
         <Finale ref={finaleRef} cfg={cfg} instagram={instagramUrl(cfg.socialLinks?.instagram ?? '')} />
@@ -131,7 +132,7 @@ export default function App() {
       <Nav items={navItems} active={active} visible={opened} onGo={go} />
 
       {!coverGone ? (
-        <Cover bride={bride} groom={groom} bismillah={cfg.bismillah} dateLine={dateLine} hasMusic={music.available} onOpen={open} />
+        <Cover bride={bride} groom={groom} groomTitle={cfg.groomTitle} initials={[shortBride, shortGroom]} bismillah={cfg.bismillah} dateLine={dateLine} hasMusic={music.available} onOpen={open} />
       ) : null}
     </>
   );

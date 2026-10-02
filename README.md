@@ -1,4 +1,4 @@
-# Aaliya & Faiz — 3D Wedding Invitation
+# Fida & Talha — 3D Nikah Invitation
 
 A mobile-first invitation that guests *walk through*: every scroll moves the
 camera one arch deeper down a corridor of carved ivory Mughal arches, past
@@ -29,11 +29,11 @@ npm run preview  # serve the production build
 2. **Bismillah** — a gold crescent spins in above the first arch.
 3. **Blessing** — Surah Ar-Rum 30:21 in Arabic with the English meaning.
 4. **Couple** — the names flip up letter by letter.
-5. **Events** — Nikah and Walima cards with Arabic calligraphy, times and halls.
+5. **Events** — a card per ceremony with Arabic calligraphy, time and hall.
 6. **Date** — Insha'Allah, the big flip-in date, a live countdown and
    **Add to calendar**.
 7. **Venue** — address, parking note and **Get directions** (Google Maps).
-8. **RSVP** — the marriage dua, **RSVP on WhatsApp** and tap-to-call contacts.
+8. **RSVP / Dua** — the marriage dua, plus **RSVP on WhatsApp** and tap-to-call contacts when configured (otherwise a closing dua scene).
 9. **Finale** — the camera leaves the last arch and the mosque comes into view.
 
 A glass navigation bar glides the camera straight to any section. On a laptop or
@@ -47,7 +47,9 @@ Everything lives in [`src/config.json`](src/config.json). Placeholders in it
 
 | Field | Notes |
 | --- | --- |
-| `brideName`, `groomName` | Cover, monogram, names scene, SEO and RSVP copy. |
+| `brideName`, `groomName`, `groomTitle`, `brideParent`, `groomParent` | Cover and names scene (title above the groom's name, D/o and S/o lines under each). |
+| `shortNames` | Short forms for the top bar, monogram initials and page title. |
+| `eventsHeading` | Heading of the ceremonies scene, e.g. "Nikah Ceremony". |
 | `weddingDate`, `weddingTime`, `timezone` | ISO date; free-text time whose first clock time (`4:00 PM`) drives the countdown and calendar link; venue offset such as `+05:30` so both are right for guests abroad. |
 | `venueName`, `venueAddress`, `venueNote` | The venue card. |
 | `googleMapsUrl` | Paste the Google Maps **Share** link for an exact pin. Empty → directions search the name and address. |

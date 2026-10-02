@@ -28,13 +28,25 @@ export function Arabic({ children, className = '', delay = 0, variant = 'r-rise'
   );
 }
 
-/** Each letter flips up on its own, a beat after the one before. */
+/**
+ * Each letter flips up on its own, a beat after the one before. Letters are
+ * grouped per word so a long name wraps between words, never mid-word.
+ */
 export function Letters({ text, start, step = 0.07 }: { text: string; start: number; step?: number }) {
+  let i = 0;
+  const words = text.split(/\s+/).filter(Boolean);
   return (
     <span className="letters" aria-label={text}>
-      {[...text].map((ch, i) => (
-        <span key={i} aria-hidden="true" className="r r-letter" style={d(start + i * step)}>
-          {ch === ' ' ? ' ' : ch}
+      {words.map((word, w) => (
+        <span key={w} className="word" aria-hidden="true">
+          {[...word].map((ch) => {
+            const delay = start + i++ * step;
+            return (
+              <span key={delay} className="r r-letter" style={d(delay)}>
+                {ch}
+              </span>
+            );
+          })}
         </span>
       ))}
     </span>
