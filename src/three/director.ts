@@ -38,8 +38,8 @@ export type Director = {
 };
 
 const clamp = (x: number, a = 0, b = 1) => Math.min(b, Math.max(a, x));
-/** Spring stiffness: settles in about 0.9 s, no overshoot (critically damped). */
-const OMEGA = 6.5;
+/** Spring stiffness: settles in about 0.8 s, no overshoot (critically damped). */
+const OMEGA = 7.5;
 /** Space reserved for the top bar and the bottom navigation. */
 const SAFE_TOP = 76;
 const SAFE_BOTTOM = 96;
@@ -59,6 +59,7 @@ export function startDirector(o: Options): Director {
   let vel = 0;
   let reported = -1;
   let dirty = true;
+  let renderNow = true;
   let fits: number[] = pages.map(() => 1);
 
   // Fixed resolution chosen once (no mid-session resolution pops).
@@ -95,6 +96,7 @@ export function startDirector(o: Options): Director {
   const onResize = () => {
     corridor?.resize(window.innerWidth, window.innerHeight);
     measure();
+    renderNow = true; // a resize clears the canvas: redraw this frame, idle or not
   };
   window.addEventListener('resize', onResize);
 
@@ -177,6 +179,11 @@ export function startDirector(o: Options): Director {
   // Keyboard.
   const onKey = (e: KeyboardEvent) => {
     if (!enabled() || e.altKey || e.ctrlKey || e.metaKey) return;
+    // A held key fires repeats; one press = one section.
+    if (e.repeat) {
+      if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', ' '].includes(e.key)) e.preventDefault();
+      return;
+    }
     const el = e.target as HTMLElement | null;
     const onControl = !!el?.closest('button, a, input, textarea, select');
     let dir = 0;
@@ -213,8 +220,13 @@ export function startDirector(o: Options): Director {
       }
       const current = i === target;
       el.toggleAttribute('inert', !current);
-      // Reveal once the glide has (almost) landed here.
-      if (current && Math.abs(pos - i) < 0.08 && enabled()) el.classList.add('in');
+      // Reveal the target once the glide has (almost) landed on it. Sections
+      // flown past on the way to a far target show their text at once
+      // (`pass` = no stagger), so a jump never shows an empty panel.
+      if (enabled()) {
+        if (current && Math.abs(pos - i) < 0.08) el.classList.add('in');
+        else if (!current && visible && (i - pos) * (target - i) > 0 && !el.classList.contains('in')) el.classList.add('in', 'pass');
+      }
     });
   }
 
@@ -232,7 +244,8 @@ export function startDirector(o: Options): Director {
       const acc = OMEGA * OMEGA * (target - pos) - 2 * OMEGA * vel;
       vel += acc * dt;
       pos += vel * dt;
-      if (Math.abs(target - pos) < 0.0005 && Math.abs(vel) < 0.0005) {
+      // Snap the last ~2 px of the spring's tail so it doesn't creep for a second.
+      if (Math.abs(target - pos) < 0.003 && Math.abs(vel) < 0.03) {
         pos = target;
         vel = 0;
       }
@@ -246,8 +259,9 @@ export function startDirector(o: Options): Director {
 
     if (!corridor) return;
     // Idle: ~30 fps is plenty for swaying lanterns and drifting dust.
-    if (!moving && intro >= 1 && now - lastRender < 32) return;
+    if (!moving && !renderNow && intro >= 1 && now - lastRender < 32) return;
     lastRender = now;
+    renderNow = false;
     corridor.render(pos, (now - t0) / 1000, intro);
   }
   raf = requestAnimationFrame(frame);

@@ -130,6 +130,8 @@ main { position: fixed; inset: 0; overflow: hidden; }
 .scene:not(.in) .r-cardX { transform: translate3d(0, 40px, -220px) rotateX(70deg); }
 .scene:not(.in) .r-flipday { transform: rotateX(-110deg) translateZ(60px) scale(1.1); }
 .r-coin { transition-duration: 1.4s, .6s, 1s; }
+/* flown past during a multi-section jump: show at once, no stagger */
+.scene.pass .r { transition-delay: 0s; transition-duration: .3s; }
 .r-letter { display: inline-block; transform-origin: 50% 100%; }
 .r-cardL, .r-cardR, .r-cardX { transform-style: preserve-3d; }
 
